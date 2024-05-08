@@ -2,7 +2,7 @@ package transport
 
 import (
 	"net/http"
-    "gosamm/sammwr/gss"
+    "github.com/samanamonitor/gosammwr/sammwr/gss"
     "net/url"
     "encoding/base64"
     "fmt"

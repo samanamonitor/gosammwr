@@ -1,7 +1,7 @@
 package main
 
 import (
-    "gosamm/sammwr/shell"
+    "github.com/samanamonitor/gosammwr/sammwr/shell"
     "fmt"
     "os"
 )

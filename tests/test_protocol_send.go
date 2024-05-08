@@ -2,7 +2,7 @@ package main
 
 import (
     "fmt"
-    "gosamm/sammwr/protocol"
+    "github.com/samanamonitor/gosammwr/sammwr/protocol"
     "github.com/beevik/etree"
     "os"
     "encoding/base64"
