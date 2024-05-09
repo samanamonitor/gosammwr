@@ -2,7 +2,7 @@ package protocol
 
 import (
 	"github.com/beevik/etree"
-	"github.com/samanamonitor/gosammwr/sammwr/transport"
+	"github.com/samanamonitor/gosammwr/transport"
 	"github.com/google/uuid"
 	"errors"
 	"fmt"

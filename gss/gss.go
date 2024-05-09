@@ -1,7 +1,7 @@
 package gss
 
 /*
-#cgo LDFLAGS: -lkrb5 -lgssapi_krb5 -Wl,-rpath=./lib
+#cgo LDFLAGS: -lkrb5 -lgssapi_krb5
 #include "kerberos.h"
 */
 import "C"

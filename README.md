@@ -7,4 +7,6 @@ Packages:
 
 # Development
 `docker build -t gosammdev .`
-`docker run -v $(pwd):/usr/src -idt --name gosammdev --dns 192.168.0.100 --dns 192.168.0.102 gosammdev /bin/bash`
+`DNS1=<change with kerberos dns server>
+DNS2=<change with kerberos dns server>
+docker run -v $(pwd):/usr/src -idt --name gosammdev --dns $DNS1 --dns $DNS2 gosammdev /bin/bash`
