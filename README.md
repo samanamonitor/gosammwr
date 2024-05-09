@@ -6,5 +6,5 @@ Packages:
 - krb5-user
 
 # Development
-`PROJECT_PATH=<path to the project>
-ln -s ${PROJECT_PATH} /usr/local/go/src/gosamm`
+`docker build -t gosammdev .`
+`docker run -v $(pwd):/usr/src -idt --name gosammdev --dns 192.168.0.100 --dns 192.168.0.102 gosammdev /bin/bash`
