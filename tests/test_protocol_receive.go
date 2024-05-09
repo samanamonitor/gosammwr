@@ -2,7 +2,7 @@ package main
 
 import (
     "fmt"
-    "github.com/samanamonitor/gosammwr/sammwr/protocol"
+    "github.com/samanamonitor/gosammwr/protocol"
     "github.com/beevik/etree"
     "os"
 )
