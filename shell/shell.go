@@ -1,7 +1,7 @@
 package shell
 
 import (
-	"github.com/samanamonitor/gosammwr/sammwr/protocol"
+	"github.com/samanamonitor/gosammwr/protocol"
 	"github.com/beevik/etree"
 	"errors"
 )
