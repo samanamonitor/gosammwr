@@ -29,6 +29,18 @@ func multipart_decode(data []byte) []byte {
     return encrypted_data[0]
 }
 
+type TransportFault struct {
+    Err error
+    StatusCode int
+    Message string
+    Payload []byte
+}
+
+func (tf *TransportFault) Error() string {
+    return fmt.Sprintf("Transport Error: StatusCode=%d Message=%s\n%s",
+        tf.StatusCode, tf.Message, tf.Err )
+}
+
 type Transport struct {
 	endpoint_string string
 	endpoint *url.URL
@@ -65,7 +77,7 @@ func (self *Transport) Init(
 		self.username, self.password, self.keytab_file, 0)
 	if result != gss.AUTH_GSS_COMPLETE {
 		return errors.New(fmt.Sprintf("Unable to initialize GSS as client. Maj=%08x Min=%d",
-			self.gssAuth.Maj_stat, self.gssAuth.Min_stat))
+			self.gssAuth.Maj_stat, int32(self.gssAuth.Min_stat)))
 	}
 	return nil
 }
@@ -109,15 +121,26 @@ func (self *Transport) BuildSession() error {
                 return err
             }
             if resp.StatusCode != 200 {
-            	return errors.New(fmt.Sprintf("Error. StatusCode=%d", resp.StatusCode))
-            }
+                err := TransportFault{
+                    StatusCode: resp.StatusCode,
+                }
+                return &err
+           }
             authentication_header := resp.Header["Www-Authenticate"]
             if len(authentication_header) < 1 {
-                return errors.New(fmt.Sprintf("Error. Invalid Www-Authenticate header. %s", authentication_header))
+                err := TransportFault {
+                    StatusCode: resp.StatusCode,
+                    Message: fmt.Sprintf("Error. Invalid Www-Authenticate header. %s", authentication_header),
+                }
+                return &err
             }
             temp := strings.Split(authentication_header[0], " ")
             if len(temp) < 2 {
-                return errors.New(fmt.Sprintf("Error. Invalid authentication token. %s", authentication_header[0]))
+                err := TransportFault {
+                    StatusCode: resp.StatusCode,
+                    Message: fmt.Sprintf(fmt.Sprintf("Error. Invalid authentication token. %s", authentication_header[0])),
+                }
+                return &err
             }
             challenge_b64 = temp[1]
             challenge, _ = base64.StdEncoding.DecodeString(challenge_b64)
@@ -139,7 +162,7 @@ func (self *Transport) SendMessage(message []byte) (error, []byte) {
     result := self.gssAuth.AuthGSSClientWrapIov(message)
     if result != gss.AUTH_GSS_COMPLETE {
     	return errors.New(fmt.Sprintf("AuthGSSClientWrapIov failed with maj=%08x min=%d",
-    		self.gssAuth.Maj_stat, self.gssAuth.Min_stat)), []byte{}
+    		self.gssAuth.Maj_stat, int32(self.gssAuth.Min_stat))), []byte{}
     }
     f := bytes.NewBuffer(nil)
     multipart_encode(f, self.gssAuth.AuthGssClientResponse(), len(message))
@@ -152,12 +175,16 @@ func (self *Transport) SendMessage(message []byte) (error, []byte) {
     result = self.gssAuth.AuthGSSClientUnwrapIov(encrypted_message)
     if result != gss.AUTH_GSS_COMPLETE {
     	return errors.New(fmt.Sprintf("AuthGSSClientUnwrapIov failed with maj=%08x min=%d",
-    		self.gssAuth.Maj_stat, self.gssAuth.Min_stat)), []byte{}
+    		self.gssAuth.Maj_stat, int32(self.gssAuth.Min_stat))), []byte{}
     }
     response_clear := self.gssAuth.AuthGssClientResponse()
     if resp.StatusCode != 200 {
-        return errors.New(fmt.Sprintf("Error. StatusCode=%d\n%s\n",
-        	resp.StatusCode, response_clear)), []byte{}
+        err := TransportFault {
+            StatusCode: resp.StatusCode,
+            Message: "Details in Payload",
+            Payload: response_clear,
+        }
+        return &err, response_clear
     }
 
     return nil, response_clear
@@ -167,7 +194,7 @@ func (self *Transport) Close() error {
 	result := self.gssAuth.AuthGssClientClean()
     if result != gss.AUTH_GSS_COMPLETE {
     	return errors.New(fmt.Sprintf("AuthGssClientClean failed with maj=%08x min=%d",
-    		self.gssAuth.Maj_stat, self.gssAuth.Min_stat))
+    		self.gssAuth.Maj_stat, int32(self.gssAuth.Min_stat)))
     }
     return nil
 }

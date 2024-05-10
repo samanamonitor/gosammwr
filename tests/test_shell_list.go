@@ -24,8 +24,15 @@ func main() {
     	fmt.Println(l)
     	panic(err)
     }
+    for _, s := range(l) {
+        fmt.Print(s)
+        fmt.Print(" ")
+    }
+    fmt.Println()
+    /*
     fmt.Println(l)
     for _, v := range l {
         fmt.Println(v.Json())
     }
+    */
 }
