@@ -32,27 +32,23 @@ type ChannelBinding struct {
 }
 
 func (self *Gss) AuthGssClientInit(service string, principal string, 
-        password string, keytab_file string, gssFlags uint) int {
+        password string, keytab_file string, gssFlags uint) GssFault {
+    result := GssFault{ Func: "AuthGssClientInit" }
     self.service = service
     self.principal = principal
     self.password = password
-    self.keytab_file = keytab_file        
+    self.keytab_file = keytab_file
 
     self.context = unsafe.Pointer(C.auth_gss_new_client())
-    result := int(C.auth_gss_client_init(
+    result.Status = C.auth_gss_client_init(
             self.context,
             C.CString(self.service), 
             C.CString(self.principal), 
             C.CString(self.password), 
             C.CString(self.keytab_file), 
-            C.uint(gssFlags)))
-    if result != AUTH_GSS_COMPLETE {
-        var maj_stat C.uint
-        var min_stat C.uint
-        self.Error = C.GoString(C.auth_gss_error_get(self.context, &maj_stat, &min_stat))
-        self.Maj_stat = uint(maj_stat)
-        self.Min_stat = uint(min_stat)
-        return AUTH_GSS_ERROR
+            C.uint(gssFlags))
+    if result.Status != AUTH_GSS_COMPLETE {
+        result.Message = C.GoString(C.auth_gss_error_get(self.context, &result.MajStat, &result.MinStat))
     }
     if self.context == nil {
         panic("Context is nil")
@@ -60,20 +56,18 @@ func (self *Gss) AuthGssClientInit(service string, principal string,
     return result
 }
 
-func (self *Gss) AuthGssClientClean() int {
-    result := int(C.auth_ggs_client_clean(self.context))
-    if result != AUTH_GSS_COMPLETE {
-        var maj_stat C.uint
-        var min_stat C.uint
-        self.Error = C.GoString(C.auth_gss_error_get(self.context, &maj_stat, &min_stat))
-        self.Maj_stat = uint(maj_stat)
-        self.Min_stat = uint(min_stat)
-        return AUTH_GSS_ERROR
+func (self *Gss) AuthGssClientClean() GssFault {
+    result := GssFault{ Func: "AuthGssClientClean" }
+    result.Status = C.auth_ggs_client_clean(self.context)
+    if result.Status != AUTH_GSS_COMPLETE {
+        result.Message = C.GoString(C.auth_gss_error_get(self.context, &result.MajStat, &result.MinStat))
     }
-    return AUTH_GSS_COMPLETE
+    return result
 }
 
-func (self *Gss) AuthGssClientStep(challenge_byte []byte) int {
+func (self *Gss) AuthGssClientStep(challenge_byte []byte) GssFault {
+    result := GssFault{ Func: "AuthGssClientStep" }
+
     if self.context == nil {
         panic("Context is nil")
     }
@@ -84,13 +78,10 @@ func (self *Gss) AuthGssClientStep(challenge_byte []byte) int {
     } else {
         cstr = nil
     }
-    result := int(C.auth_gss_client_step(self.context, cstr, C.ulong(len(challenge_byte)), nil))
-    if result == AUTH_GSS_ERROR {
-        var maj_stat C.uint
-        var min_stat C.uint
-        self.Error = C.GoString(C.auth_gss_error_get(self.context, &maj_stat, &min_stat))
-        self.Maj_stat = uint(maj_stat)
-        self.Min_stat = uint(min_stat)
+
+    result.Status = C.auth_gss_client_step(self.context, cstr, C.ulong(len(challenge_byte)), nil)
+    if result.Status == AUTH_GSS_ERROR {
+        result.Message = C.GoString(C.auth_gss_error_get(self.context, &result.MajStat, &result.MinStat))
     }
     return result
 }
@@ -103,7 +94,8 @@ func (self *Gss) AuthGssClientResponse() []byte {
     return C.GoBytes(unsafe.Pointer(r), C.int(length))
 }
 
-func (self *Gss) AuthGSSClientWrapIov(message []byte) int {
+func (self *Gss) AuthGSSClientWrapIov(message []byte) GssFault {
+    result := GssFault{ Func: "AuthGSSClientWrapIov" }
     var cstr *C.char
     var pad_len C.int
 
@@ -113,18 +105,15 @@ func (self *Gss) AuthGSSClientWrapIov(message []byte) int {
         cstr = nil
     }
 
-    result := C.auth_gss_client_wrap_iov(self.context, cstr, C.ulong(len(message)), 1, &pad_len)
-    if result == AUTH_GSS_ERROR {
-        var maj_stat C.uint
-        var min_stat C.uint
-        self.Error = C.GoString(C.auth_gss_error_get(self.context, &maj_stat, &min_stat))
-        self.Maj_stat = uint(maj_stat)
-        self.Min_stat = uint(min_stat)
+    result.Status = C.auth_gss_client_wrap_iov(self.context, cstr, C.ulong(len(message)), 1, &pad_len)
+    if result.Status == AUTH_GSS_ERROR {
+        result.Message = C.GoString(C.auth_gss_error_get(self.context, &result.MajStat, &result.MinStat))
     }
-    return int(result)
+    return result
 }
 
-func (self *Gss) AuthGSSClientUnwrapIov(message []byte) int {
+func (self *Gss) AuthGSSClientUnwrapIov(message []byte) GssFault {
+    result := GssFault{ Func: "AuthGSSClientUnwrapIov" }
     var cstr *C.char
 
     if len(message) > 0 {
@@ -133,15 +122,11 @@ func (self *Gss) AuthGSSClientUnwrapIov(message []byte) int {
         cstr = nil
     }
 
-    result := C.auth_gss_client_unwrap_iov(self.context, cstr, C.ulong(len(message)))
-    if result == AUTH_GSS_ERROR {
-        var maj_stat C.uint
-        var min_stat C.uint
-        self.Error = C.GoString(C.auth_gss_error_get(self.context, &maj_stat, &min_stat))
-        self.Maj_stat = uint(maj_stat)
-        self.Min_stat = uint(min_stat)
+    result.Status = C.auth_gss_client_unwrap_iov(self.context, cstr, C.ulong(len(message)))
+    if result.Status == AUTH_GSS_ERROR {
+        result.Message = C.GoString(C.auth_gss_error_get(self.context, &result.MajStat, &result.MinStat))
     }
-    return int(result)
+    return result
 }
 
 func (self *Gss) DebugClientState() {
