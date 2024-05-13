@@ -10,7 +10,8 @@ BINFILES=test_protocol_enum \
 	test_mime_encode \
 	test_shell_list \
 	test_shell_create \
-	test_shell_delete
+	test_shell_delete \
+	test_shell_receive
 
 all: $(BINFILES)
 
