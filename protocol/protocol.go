@@ -109,7 +109,7 @@ func (p *Protocol) Close () {
 }
 
 type GenericFault struct {
-	Err *error
+	Err error
 	FaultXML []byte
 }
 
@@ -125,7 +125,7 @@ func processFault(Err error, responseData []byte) (error) {
 		return Err
 	}
 	gf := GenericFault{
-		Err: &Err,
+		Err: Err,
 		FaultXML: responseData,
 	}
 	sf := responseXML.FindElement("//Body/Fault")
@@ -134,7 +134,7 @@ func processFault(Err error, responseData []byte) (error) {
 		return &gf
 	}
 	soapf := SOAPFault{
-		Err: &gf,
+		Err: gf,
 		FaultElement: sf,
 	}
 	err = soapf.Init()
@@ -146,7 +146,7 @@ func processFault(Err error, responseData []byte) (error) {
 		if fault_detail.FullTag() == "f:WSManFault" && 
 				fault_detail.NamespaceURI() == "http://schemas.microsoft.com/wbem/wsman/1/wsmanfault" {
 			wsf := WSManFault{
-				Err: &soapf,
+				Err: soapf,
 				FaultElement: fault_detail,
 			}
 			wsf.Init()
@@ -230,6 +230,9 @@ func (p *Protocol) Enumerate(resourceURI string,
 	}
 	err, response := p.SendMessage(doc)
 	if err != nil {
+		if response == nil {
+			return err, ""
+		}
 		r, _ := response.WriteToString()
 		return err, r
 	}
@@ -262,6 +265,9 @@ func (p *Protocol) Pull(resourceURI string,
 
 	err, response := p.SendMessage(doc)
 	if err != nil {
+		if response == nil {
+			return err, "", ""
+		}
 		r, _ := response.WriteToString()
 		return err, r, ""
 	}
@@ -299,6 +305,9 @@ func (p *Protocol) Release(resourceURI string,
 
 	err, response := p.SendMessage(doc)
 	if err != nil {
+		if response == nil {
+			return err, ""
+		}
 		r, _ := response.WriteToString()
 		return err, r
 	}
@@ -317,6 +326,9 @@ func (p *Protocol) Create(resourceURI string, instance *etree.Element,
 
 	err, response := p.SendMessage(doc)
 	if err != nil {
+		if response == nil {
+			return err, ""
+		}
 		r, _ := response.WriteToString()
 		return err, r
 	}
@@ -336,6 +348,9 @@ func (p *Protocol) Delete(resourceURI string, selectorset *map[string]string,
 
 	err, response := p.SendMessage(doc)
 	if err != nil {
+		if response == nil {
+			return err, ""
+		}
 		r, _ := response.WriteToString()
 		return err, r
 	}
@@ -354,6 +369,9 @@ func (p *Protocol) Command(resourceURI string, command_body *etree.Element, sele
 
 	err, response := p.SendMessage(doc)
 	if err != nil {
+		if response == nil {
+			return err, ""
+		}
 		r, _ := response.WriteToString()
 		return err, r
 	}
@@ -372,6 +390,9 @@ func (p *Protocol) Receive(resourceURI string, receive_body *etree.Element, sele
 
 	err, response := p.SendMessage(doc)
 	if err != nil {
+		if response == nil {
+			return err, ""
+		}
 		r, _ := response.WriteToString()
 		return err, r
 	}
@@ -390,6 +411,9 @@ func (p *Protocol) Send(resourceURI string, send_body *etree.Element, selectorse
 
 	err, response := p.SendMessage(doc)
 	if err != nil {
+		if response == nil {
+			return err, ""
+		}
 		r, _ := response.WriteToString()
 		return err, r
 	}
@@ -408,6 +432,9 @@ func (p *Protocol) Signal(resourceURI string, signal_body *etree.Element, select
 
 	err, response := p.SendMessage(doc)
 	if err != nil {
+		if response == nil {
+			return err, ""
+		}
 		r, _ := response.WriteToString()
 		return err, r
 	}

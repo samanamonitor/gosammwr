@@ -7,7 +7,7 @@ import (
 )
 
 type SOAPFault struct {
-	Err *GenericFault
+	Err GenericFault
 	FaultElement *etree.Element
 	Code string
 	SubCode []string
@@ -21,7 +21,7 @@ type SOAPFault struct {
 
 func (f *SOAPFault) Init() error {
 	if f.FaultElement == nil {
-		return f.Err
+		return &f.Err
 	}
 
 	fault_code := f.FaultElement.FindElement("./Code/Value")

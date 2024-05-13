@@ -7,7 +7,7 @@ import (
 )
 
 type WSManFault struct {
-	Err *SOAPFault
+	Err SOAPFault
 	FaultElement *etree.Element
 	Code int
 	Machine string
@@ -25,7 +25,7 @@ func (wf *WSManFault) Error() string {
 
 func (wf *WSManFault) Init() error {
 	if wf.FaultElement == nil {
-		return wf.Err
+		return &wf.Err
 	}
 	code := wf.FaultElement.SelectAttr("Code")
 	if code == nil {
@@ -48,7 +48,7 @@ func (wf *WSManFault) Init() error {
 	wf.Message = message.Text()
 	provider := message.FindElement("./ProviderFault")
 	if provider == nil {
-		return wf.Err
+		return &wf.Err
 	}
 	pf := ProviderFault{
 		FaultElement: provider,

@@ -6,7 +6,7 @@ import (
 )
 
 type ProviderFault struct {
-	Err *WSManFault
+	Err WSManFault
 	FaultElement *etree.Element
 	attributes map[string]string
 	Fault *WSManFault
@@ -14,7 +14,7 @@ type ProviderFault struct {
 
 func (pf *ProviderFault) Init() error {
 	if pf.FaultElement == nil {
-		return pf.Err
+		return &pf.Err
 	}
 	for _, a := range pf.FaultElement.Attr {
 		pf.attributes[a.Key] = a.Value
@@ -24,7 +24,6 @@ func (pf *ProviderFault) Init() error {
 		return pf
 	}
 	sf := WSManFault{
-		Err: nil,
 		FaultElement: subfault,
 	}
 	pf.Fault = &sf
