@@ -6,6 +6,15 @@ import (
     "os"
 )
 
+/*
+Examples:
+
+./test_protocol_enum resourceuri http://schemas.microsoft.com/wbem/wsman/1/windows/shell
+
+./test_protocol_enum schema root/cimv2 win32_computersystem
+
+*/
+
 func main() {
     if len(os.Args) < 4 {
         panic("Must pass shellid, commandid and stream name as parameter")
@@ -22,22 +31,24 @@ func main() {
     }
     defer prot.Close()
 
-    /* Test WMI Class */
-    /*
-    resourceURI := "http://schemas.microsoft.com/wbem/wsman/1/wmi/root/cimv2/Win32_OperatingSystem"
-    */
 
-    /* Test Schema enum with SelectorSet */
-    /*
-    resourceURI := "http://schemas.dmtf.org/wbem/cim-xml/2/cim-schema/2/*"
-    selectorset := map[string]string {
-        "__cimnamespace": cimNamespace,
-        "ClassName": "",
+    var resourceURI string
+    var selectorset *map[string]string
+
+    switch os.Args[1] {
+    case "resourceuri":
+        resourceURI = os.Args[2]
+        selectorset = nil
+    case "schema":
+        resourceURI = "http://schemas.dmtf.org/wbem/cim-xml/2/cim-schema/2/*"
+        temp := map[string]string{
+            "__cimnamespace": os.Args[2],
+            "ClassName": os.Args[3],
+        }
+        selectorset = &temp
+    default:
+        panic("Invaid parameter. Only resourceuri or schema allowed")
     }
-    */
-
-    /* Test Shell */
-    resourceURI := "http://schemas.microsoft.com/wbem/wsman/1/windows/shell"
 
     err, response_doc := prot.Enumerate(resourceURI, nil, nil, nil)
     if err != nil {
