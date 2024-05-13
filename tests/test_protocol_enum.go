@@ -4,7 +4,6 @@ import (
     "fmt"
     "github.com/samanamonitor/gosammwr/protocol"
     "os"
-    "strings"
 )
 
 func main() {
