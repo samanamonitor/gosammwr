@@ -49,6 +49,7 @@ int auth_gss_client_init(void *s,
     gss_buffer_desc name_token = GSS_C_EMPTY_BUFFER;
     gss_OID mech;
     gss_name_t name = GSS_C_NO_NAME;
+    state->err_msg = "No Error";
 
     if (gss_flags != 0) {
         state->gss_flags = gss_flags;
@@ -232,6 +233,7 @@ int auth_gss_client_step(void *s, char* challenge, size_t challenge_len, struct 
         state->maj_stat = gss_inquire_context(&state->min_stat, state->context, &gssuser, NULL, NULL, NULL,  NULL, NULL, NULL);
         if (GSS_ERROR(state->maj_stat))
         {
+        state->err_msg = "Failed to get username";
             ret = AUTH_GSS_ERROR;
             goto end;
         }
@@ -240,10 +242,11 @@ int auth_gss_client_step(void *s, char* challenge, size_t challenge_len, struct 
         state->maj_stat = gss_display_name(&state->min_stat, gssuser, &name_token, NULL);
         if (GSS_ERROR(state->maj_stat))
         {
-            if (name_token.value)
+            if (name_token.value) {
                 gss_release_buffer(&state->min_stat, &name_token);
+            }
             gss_release_name(&state->min_stat, &gssuser);
-
+            state->err_msg = "Unable to decode username";
             ret = AUTH_GSS_ERROR;
             goto end;
         }
