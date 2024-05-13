@@ -4,9 +4,13 @@ import (
     "fmt"
     "github.com/samanamonitor/gosammwr/protocol"
     "os"
+    "strings"
 )
 
 func main() {
+    if len(os.Args) < 4 {
+        panic("Must pass shellid, commandid and stream name as parameter")
+    }
     endpoint := os.Getenv("WR_ENDPOINT")
     username := os.Getenv("WR_USERNAME")
     password := os.Getenv("WR_PASSWORD")
@@ -18,8 +22,6 @@ func main() {
         panic(err)
     }
     defer prot.Close()
-    fmt.Printf("Init Complete\n")
-
 
     /* Test WMI Class */
     /*

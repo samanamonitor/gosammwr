@@ -56,7 +56,7 @@ func (s *Shell) List() (error, []ShellInstance){
 	var out []ShellInstance
 	for ; len(EnumerationContext) > 0; {
 		var PullResponse string
-		err, EnumerationContext, PullResponse = s.prot.Pull(resourceURI, EnumerationContext[5:], -1, nil, nil)
+		err, EnumerationContext, PullResponse = s.prot.Pull(resourceURI, EnumerationContext, -1, nil, nil)
 		if err != nil {
 			return err, []ShellInstance{}
 		}

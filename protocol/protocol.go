@@ -241,7 +241,7 @@ func (p *Protocol) Enumerate(resourceURI string,
 		ret, _ := response.WriteToString()
 		return errors.New("Response did not contain EnumerationContext.\n" + ret), ""
 	}
-	return nil, EnumerationContext.Text()
+	return nil, EnumerationContext.Text()[5:]
 }
 
 func (p *Protocol) Pull(resourceURI string,
@@ -274,7 +274,7 @@ func (p *Protocol) Pull(resourceURI string,
 	pull_ec := response.FindElement("//EnumerationContext")
 	var ec string
 	if pull_ec != nil {
-		ec = pull_ec.Text()
+		ec = pull_ec.Text()[5:]
 	} else {
 		ec = ""
 	}
