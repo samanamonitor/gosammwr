@@ -1,27 +1,17 @@
-BINFILES=test_protocol_enum \
-	test_protocol_enum_cmd \
-	test_protocol_get \
-	test_protocol_release \
-	test_protocol_pull \
-	test_protocol_create \
-	test_protocol_delete \
-	test_protocol_receive \
-	test_protocol_send \
-	test_mime_encode \
-	test_shell_list \
-	test_shell_create \
-	test_shell_delete \
-	test_shell_receive \
-	test_shell_command \
-	test_shell_send
 
-all: $(BINFILES)
+SRC_FILES=$(wildcard *.go)
+BIN_FILES=$(patsubst %.go,bin/%,$(SRC_FILES))
 
-%: %.go
-	go build $<
+all: $(BIN_FILES)
+
+bin:
+	mkdir -p $@
+
+bin/%: %.go bin
+	go build -o $@ $<
 
 test: test.go
 	go build $< 
 
 clean:
-	rm -f $(BINFILES)
+	rm -Rf bin
