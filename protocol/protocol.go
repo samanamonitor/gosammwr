@@ -22,8 +22,8 @@ type Option struct {
 
 type Filter struct {
 	Dialect string
-	wql *string
-	selectors *map[string]string
+	Wql *string
+	Selectorset *map[string]string
 }
 
 func (p *Protocol) Init (endpoint string,
@@ -55,6 +55,7 @@ func (p Protocol) PrepareHeader (resourceURI string, action string,
 	envelope.CreateAttr("xmlns:b", "http://schemas.dmtf.org/wbem/wsman/1/cimbinding.xsd")
 	envelope.CreateAttr("xmlns:wsen", "http://schemas.xmlsoap.org/ws/2004/09/enumeration")
 	envelope.CreateAttr("xmlns:rsp", "http://schemas.microsoft.com/wbem/wsman/1/windows/shell")
+	envelope.CreateAttr("xmlns:xs", "http://www.w3.org/2001/XMLSchema")
 
 	header := envelope.CreateElement("s:Header")
 	header.CreateElement("a:To").CreateText(p.header_to)
@@ -162,6 +163,9 @@ func (p *Protocol) SendMessage(doc *etree.Document) (error, *etree.Document) {
 	if err != nil {
 		return err, nil
 	}
+/*
+	fmt.Print(string(request))
+*/
 	err, response := p.transport.SendMessage(request)
 	if err != nil {
 		return processFault(err, response), nil
@@ -215,13 +219,13 @@ func (p *Protocol) Enumerate(resourceURI string,
 		"s:Body").CreateElement("wsen:Enumerate")
 
 	if filter != nil {
-		f := enumerate.CreateElement("wsen:Filter")
+		f := enumerate.CreateElement("w:Filter")
 		f.CreateAttr("Dialect", filter.Dialect)
-		if filter.wql != nil {
-			f.CreateText(*filter.wql)
+		if filter.Wql != nil {
+			f.CreateText(*filter.Wql)
 		} else {
 			ss := f.CreateElement("w:SelectorSet")
-			for key, value := range *selectorset {
+			for key, value := range *filter.Selectorset {
 				s := ss.CreateElement("w:Selector")
 				s.CreateAttr("Name", key)
 				s.CreateText(value)
