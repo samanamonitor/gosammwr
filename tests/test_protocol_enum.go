@@ -16,8 +16,8 @@ Examples:
 */
 
 func main() {
-    if len(os.Args) < 4 {
-        panic("Must pass shellid, commandid and stream name as parameter")
+    if len(os.Args) < 2 {
+        panic("Must pass more parameters as parameter")
     }
     endpoint := os.Getenv("WR_ENDPOINT")
     username := os.Getenv("WR_USERNAME")
@@ -33,29 +33,53 @@ func main() {
 
 
     var resourceURI string
+    var filter *protocol.Filter
     var selectorset *map[string]string
+    var optionset *map[string]protocol.Option
 
     switch os.Args[1] {
     case "resourceuri":
         resourceURI = os.Args[2]
-        selectorset = nil
-    case "schema":
-        resourceURI = "http://schemas.dmtf.org/wbem/cim-xml/2/cim-schema/2/*"
-        temp := map[string]string{
-            "__cimnamespace": os.Args[2],
-            "ClassName": os.Args[3],
+        if len(os.Args) == 5 {
+            t_selectorset := map[string]string {
+                os.Args[3]: os.Args[4],
+            }
+            t_filter := protocol.Filter{
+                Dialect: "http://schemas.dmtf.org/wbem/wsman/1/wsman/SelectorFilter",
+                Selectorset: &t_selectorset,
+            }
+            filter = &t_filter
+        } else {
+            filter = nil
         }
-        selectorset = &temp
+        selectorset = nil
+        optionset = nil
+    case "schema":
+        t_optionset := map[string]protocol.Option{
+            "IncludeClassOrigin": {
+                Type: "xs:boolean",
+                Value: "FALSE",
+            },
+        }
+        optionset = &t_optionset
+        resourceURI = "http://schemas.dmtf.org/wbem/cim-xml/2/cim-schema/2/*"
+    case "wql":
+        optionset = nil
+        resourceURI = "http://schemas.microsoft.com/wbem/wsman/1/wmi/root/cimv2/*"
+        t_filter := protocol.Filter{}
+        t_filter.Dialect = "http://schemas.microsoft.com/wbem/wsman/1/WQL"
+        t_filter.Selectorset = nil
+        t_filter.Wql = &os.Args[2]
+        filter = &t_filter
     default:
         panic("Invaid parameter. Only resourceuri or schema allowed")
     }
 
-    err, response_doc := prot.Enumerate(resourceURI, selectorset, nil, nil)
+    err, response_doc := prot.Enumerate(resourceURI, filter, selectorset, optionset)
     if err != nil {
         fmt.Println(response_doc)
         panic(err)
     }
 
-    fmt.Println(response_doc)
-    fmt.Printf("\nDone\n")
+    fmt.Println(resourceURI, response_doc)
 }

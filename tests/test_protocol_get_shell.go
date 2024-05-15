@@ -11,12 +11,15 @@ func main() {
     if len(os.Args) < 2 {
         panic("Must pass shellid as parameter")
     }
-    endpoint := "http://smnnovmsfs01.samana.local:5985/wsman"
-    keytab_file := "samanasvc2.keytab"
+    endpoint := os.Getenv("WR_ENDPOINT")
+    username := os.Getenv("WR_USERNAME")
+    password := os.Getenv("WR_PASSWORD")
+    keytab_file := os.Getenv("WR_KEYTAB")
+
     var resourceURI string
 
     prot := protocol.Protocol{}
-    err := prot.Init(endpoint, nil, nil, &keytab_file)
+    err := prot.Init(endpoint, username, password, keytab_file)
     if err != nil {
         panic(err)
     }
@@ -31,11 +34,10 @@ func main() {
 
     err, response_doc := prot.Get(resourceURI, &selectorset, nil)
     if err != nil {
-        response_doc.WriteTo(os.Stdout)
-        fmt.Println()
+        fmt.Println(response_doc)
         panic(err)
     }
 
-    response_doc.WriteTo(os.Stdout)
+    fmt.Println(response_doc)
     fmt.Printf("\nDone\n")
 }

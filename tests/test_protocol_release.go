@@ -31,6 +31,7 @@ func main() {
 
     /* Test Resource Uri */
     resourceURI = baseURI + "/" + cimNamespace + "/" + className
+    resourceURI = "http://schemas.dmtf.org/wbem/cim-xml/2/cim-schema/2/*"
 
     /* Test SelectorSet */
     /*
