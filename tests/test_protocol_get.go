@@ -4,15 +4,17 @@ import (
     "fmt"
     "github.com/samanamonitor/gosammwr/protocol"
     "os"
+    "strings"
 )
 
 /*
 Examples:
 
-./test_protocol_get resourceuri http://schemas.microsoft.com/wbem/wsman/1/wmi/root/cimv2/Win32_OperatingSystem
+bin/test_protocol_get http://schemas.dmtf.org/wbem/cim-xml/2/cim-schema/2/* __cimnamespace=root/cimv2 ClassName=Win32_OperatingSystem
 
-./test_protocol_get schema root/cimv2 win32_operatingsystem
+bin/test_protocol_get http://schemas.microsoft.com/wbem/wsman/1/wmi/root/cimv2/win32_diskdrive "DeviceId=\\\\.\\PHYSICALDRIVE2"
 
+bin/test_protocol_get http://schemas.microsoft.com/wbem/wsman/1/windows/shell <shellid>
 */
 
 
@@ -28,20 +30,17 @@ func main() {
     var resourceURI string
     var selectorset *map[string]string
 
-    switch os.Args[1] {
-    case "resourceuri":
-        resourceURI = os.Args[2]
-        selectorset = nil
-    case "schema":
-        resourceURI = "http://schemas.dmtf.org/wbem/cim-xml/2/cim-schema/2/*"
-        temp := map[string]string{
-            "__cimnamespace": os.Args[2],
-            "ClassName": os.Args[3],
+    resourceURI = os.Args[1]
+    cmd_selectors := os.Args[2:]
+    t_selectorset := map[string]string{}
+    for i := 0; i < len(cmd_selectors); i += 1 {
+        temp := strings.Split(cmd_selectors[i], "=")
+        if len(temp) != 2 {
+            panic("Invalid parameters. Selectors must be of type key=value")
         }
-        selectorset = &temp
-    default:
-        panic("Invaid parameter. Only resourceuri or schema allowed")
+        t_selectorset[temp[0]] = temp[1]
     }
+    selectorset = &t_selectorset
 
     prot := protocol.Protocol{}
     err := prot.Init(endpoint, username, password, keytab_file)
@@ -49,7 +48,6 @@ func main() {
         panic(err)
     }
     defer prot.Close()
-    fmt.Printf("Init Complete\n")
 
     err, response_doc := prot.Get(resourceURI, selectorset, nil)
     if err != nil {
@@ -58,5 +56,4 @@ func main() {
     }
 
     fmt.Println(response_doc)
-    fmt.Printf("\nDone\n")
 }

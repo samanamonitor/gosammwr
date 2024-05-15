@@ -9,9 +9,9 @@ import (
 /*
 Examples:
 
-./test_protocol_enum resourceuri http://schemas.microsoft.com/wbem/wsman/1/windows/shell
+bin/test_protocol_enum resourceuri http://schemas.microsoft.com/wbem/wsman/1/windows/shell
 
-./test_protocol_enum schema root/cimv2 win32_computersystem
+bin/test_protocol_enum schema root/cimv2 win32_computersystem
 
 */
 

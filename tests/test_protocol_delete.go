@@ -4,21 +4,42 @@ import (
     "fmt"
     "github.com/samanamonitor/gosammwr/protocol"
     "os"
+    "bufio"
+    "strings"
 )
+
+/*
+Example
+
+bin/test_protocol_delete http://schemas.microsoft.com/wbem/wsman/1/windows/shell/cmd <ShellId>
+
+*/
 
 
 func main() {
-    if len(os.Args) < 2 {
-        panic("Must pass shellid as parameter")
-    }
-    ShellId := os.Args[1]
-
     endpoint := os.Getenv("WR_ENDPOINT")
     username := os.Getenv("WR_USERNAME")
     password := os.Getenv("WR_PASSWORD")
     keytab_file := os.Getenv("WR_KEYTAB")
 
-    resourceURI := "http://schemas.microsoft.com/wbem/wsman/1/windows/shell/cmd"
+    var resourceURI string
+    var ShellId string
+
+    if os.Args[1] == "-" {
+        reader := bufio.NewReader(os.Stdin)
+        input, _ := reader.ReadString('\n')
+        input = strings.Trim(input, "\n")
+        temp := strings.Split(input, " ")
+        if len(temp) != 2 {
+            panic("Invalid number of paramenters. Expecting resourceuri and shellid")
+        }
+        resourceURI = temp[0]
+        ShellId = temp[1]
+
+    } else {
+        resourceURI = os.Args[1]
+        ShellId = os.Args[2]
+    }
 
     prot := protocol.Protocol{}
     err := prot.Init(endpoint, username, password, keytab_file)
@@ -26,8 +47,6 @@ func main() {
         panic(err)
     }
     defer prot.Close()
-    fmt.Printf("Init Complete\n")
-
     selectorset := map[string]string {
         "ShellId": ShellId,
     }
@@ -37,7 +56,4 @@ func main() {
         fmt.Println(response)
         panic(err)
     }
-
-    fmt.Println(response)
-    fmt.Printf("\nDone\n")
 }

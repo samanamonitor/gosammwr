@@ -4,6 +4,8 @@ import (
     "fmt"
     "github.com/samanamonitor/gosammwr/protocol"
     "os"
+    "bufio"
+    "strings"
 )
 
 
@@ -11,14 +13,28 @@ func main() {
     if len(os.Args) < 2 {
         panic("Must pass uuid as parameter")
     }
-    endpoint := "http://smnnovmsfs01.samana.local:5985/wsman"
-    username := ""
-    password := ""
-    keytab_file := "samanasvc2.keytab"
-    baseURI := "http://schemas.microsoft.com/wbem/wsman/1/wmi"
-    cimNamespace := "root/cimv2"
-    className := "Win32_OperatingSystem"
+    endpoint := os.Getenv("WR_ENDPOINT")
+    username := os.Getenv("WR_USERNAME")
+    password := os.Getenv("WR_PASSWORD")
+    keytab_file := os.Getenv("WR_KEYTAB")
+
     var resourceURI string
+    var uuid string
+
+    if os.Args[1] == "-" {
+        reader := bufio.NewReader(os.Stdin)
+        input, _ := reader.ReadString('\n')
+        temp := strings.Split(input, " ")
+        if len(temp) != 2 {
+            panic("Invalid number of inputs. <resourceuri> <enumerationcontext> expected.")
+        }
+        resourceURI = temp[0]
+        uuid = temp[1]
+
+    } else {
+        resourceURI = os.Args[1]
+        uuid = os.Args[2]
+    }
 
     prot := protocol.Protocol{}
     err := prot.Init(endpoint, username, password, keytab_file)
@@ -26,22 +42,6 @@ func main() {
         panic(err)
     }
     defer prot.Close()
-    fmt.Printf("Init Complete\n")
-
-
-    /* Test Resource Uri */
-    resourceURI = baseURI + "/" + cimNamespace + "/" + className
-    resourceURI = "http://schemas.dmtf.org/wbem/cim-xml/2/cim-schema/2/*"
-
-    /* Test SelectorSet */
-    /*
-    resourceURI = "http://schemas.dmtf.org/wbem/cim-xml/2/cim-schema/2/*"
-    selectorset := map[string]string {
-        "__cimnamespace": cimNamespace,
-        "ClassName": className,
-    }
-    */
-    uuid := os.Args[1]
 
     err, response := prot.Release(resourceURI, uuid, nil)
     if err != nil {
@@ -49,6 +49,4 @@ func main() {
         panic(err)
     }
 
-    fmt.Println(response)
-    fmt.Printf("\nDone\n")
 }

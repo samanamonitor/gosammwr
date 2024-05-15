@@ -5,13 +5,16 @@ import (
     "github.com/samanamonitor/gosammwr/protocol"
     "os"
     "github.com/beevik/etree"
+    "bufio"
+    "strings"
 )
+
+/*
+bin/test_protocol_command http://schemas.microsoft.com/wbem/wsman/1/windows/shell/cmd <shellid>
+*/
 
 
 func main() {
-    if len(os.Args) < 3 {
-        panic("Must pass shellid as parameter and the command and arguments")
-    }
     endpoint := os.Getenv("WR_ENDPOINT")
     username := os.Getenv("WR_USERNAME")
     password := os.Getenv("WR_PASSWORD")
@@ -24,17 +27,32 @@ func main() {
     }
     defer prot.Close()
 
-    resourceURI := "http://schemas.microsoft.com/wbem/wsman/1/windows/shell/cmd"
+    var resourceURI string
+    var ShellId string
+    var command []string
+
+    if os.Args[1] == "-" {
+        reader := bufio.NewReader(os.Stdin)
+        input, _ := reader.ReadString('\n')
+        input = strings.Trim(input, "\n")
+        temp := strings.Split(input, " ")
+        resourceURI = temp[0]
+        ShellId = temp[1]
+        command = os.Args[2:]
+    } else {
+        resourceURI = os.Args[1]
+        ShellId = os.Args[2]
+        command = os.Args[3:]
+    }
 
     selectorset := map[string]string{
-        "ShellId": os.Args[1],
+        "ShellId": ShellId,
     }
     optionset := map[string]protocol.Option {
         "WINRS_CONSOLEMODE_STDIN": { Value: "TRUE", Type: "xs:boolean" },
         "WINRS_SKIP_CMD_SHELL": { Value: "TRUE", Type: "xs:boolean" },
     }
 
-    command := os.Args[2:]
     if len(command) < 1 {
         panic("command array must have at least 1 element")
     }
@@ -51,5 +69,5 @@ func main() {
     Body := etree.NewDocument()
     Body.ReadFromString(body_str)
     CommandId := Body.FindElement("//CommandId")
-    fmt.Println(CommandId.Text())
+    fmt.Println(resourceURI, ShellId, CommandId.Text())
 }

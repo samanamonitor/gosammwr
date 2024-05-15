@@ -5,15 +5,23 @@ import (
     "github.com/samanamonitor/gosammwr/protocol"
     "github.com/beevik/etree"
     "os"
+    "bufio"
+    "strings"
 )
 
+/*
+
+example:
+
+bin/test_protocol_create http://schemas.microsoft.com/wbem/wsman/1/windows/shell/cmd
+
+*/
 
 func main() {
     endpoint := os.Getenv("WR_ENDPOINT")
     username := os.Getenv("WR_USERNAME")
     password := os.Getenv("WR_PASSWORD")
     keytab_file := os.Getenv("WR_KEYTAB")
-    resourceURI := "http://schemas.microsoft.com/wbem/wsman/1/windows/shell/cmd"
 
     prot := protocol.Protocol{}
     err := prot.Init(endpoint, username, password, keytab_file)
@@ -21,10 +29,20 @@ func main() {
         panic(err)
     }
     defer prot.Close()
-    fmt.Printf("Init Complete\n")
 
+    var resourceURI string
 
+    if len(os.Args) != 2 {
+        panic("Invalid number of parameters. Expecting resourceuri or -")
+    }
+    if os.Args[1] == "-" {
+        reader := bufio.NewReader(os.Stdin)
+        input, _ := reader.ReadString('\n')
+        resourceURI = strings.Trim(input, "\n")
 
+    } else {
+        resourceURI = os.Args[1]
+    }
 
     shell := etree.NewElement("rsp:Shell")
     shell.CreateElement("rsp:InputStreams").CreateText("stdin")
@@ -46,14 +64,9 @@ func main() {
     }
     */
 
-    optionset := map[string]protocol.Option{}
-    optionset["WINRS_NOPROFILE"] = protocol.Option{
-        Value: "FALSE",
-        Type: "xs:boolean",
-    }
-    optionset["WINRS_CODEPAGE"] = protocol.Option{
-        Value: "437",
-        Type: "xs:unsignedInt",
+    optionset := map[string]protocol.Option{
+        "WINRS_NOPROFILE": { Value: "FALSE", Type: "xs:boolean" },
+        "WINRS_CODEPAGE": { Value: "437", Type: "xs:unsignedInt" },
     }
 
     err, response := prot.Create(resourceURI, shell, &optionset)
@@ -62,6 +75,12 @@ func main() {
         panic(err)
     }
 
-    fmt.Println(response)
-    fmt.Printf("\nDone\n")
+    Body := etree.NewDocument()
+    Body.ReadFromString(response)
+    ShellId := Body.FindElement("//Shell/ShellId")
+    if ShellId == nil {
+        fmt.Println(response)
+        panic("Invalid response. Missing ShellId")
+    }
+    fmt.Println(resourceURI, ShellId.Text())
 }
