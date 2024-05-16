@@ -9,7 +9,7 @@ import (
 )
 
 type Protocol struct {
-	transport transport.Transport
+	transport *transport.Transport
 	header_to string
 	header_replyto string
 	header_maxenvelopesize string
@@ -30,7 +30,15 @@ func (p *Protocol) Init (endpoint string,
 		username string,
 		password string,
 		keytab_file string) error {
-	err := p.transport.Init(endpoint, username, password, keytab_file)
+
+	transport := transport.Transport{
+		Endpoint: endpoint,
+		Username: username,
+		Password: password,
+		Keytab_file: keytab_file,
+	}
+	p.transport = &transport
+	err := p.transport.Init()
 	if err != nil {
 		return err
 	}
