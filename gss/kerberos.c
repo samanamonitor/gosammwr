@@ -405,6 +405,10 @@ int auth_gss_client_unwrap_iov(void *s, char *data, size_t len)
     iov[2].buffer.value = "";
     iov[2].buffer.length = 0;
 
+    fprintf(stderr, "IOV0->bufferlen=%d\n", iov[0].buffer.length);
+    fprintf(stderr, "IOV1->bufferlen=%d\n", iov[1].buffer.length);
+    fprintf(stderr, "IOV2->bufferlen=%d\n", iov[2].buffer.length);
+
     state->maj_stat = gss_unwrap_iov(&state->min_stat, state->context, &conf_state, &qop_state, iov, iov_count);
 
     if (state->maj_stat != GSS_S_COMPLETE)
