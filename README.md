@@ -19,8 +19,9 @@ winrm set winrm/config/service "@{AllowUnencrypted="true"}"
 ```
 ## Send unencrypted messages with windows
 ```
+$computer=computer
 $pssessionoption=New-PSSessionOption -NoEncryption
-Enter-PSSession -ComputerName computer -SessionOption $pssessionoption
+Enter-PSSession -ComputerName $computer -SessionOption $pssessionoption
 ```
 ## Enable encrypted messages on Windows
 ```
@@ -32,5 +33,15 @@ we need to create a connection for each stream and keep them alive. When a timeo
 we can send data over a separate connection
 
 # Powershell
-ResourceURI for powershell
+
+## Protocol Definition
+https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-psrp/fa166504-8bcc-4692-82f7-eeacd6251ea6
+
+## ResourceURI for powershell
 http://schemas.microsoft.com/powershell/Microsoft.PowerShell
+
+# References
+
+https://www.dmtf.org/sites/default/files/standards/documents/DSP0226_1.2.0.pdf
+https://www.dmtf.org/sites/default/files/standards/documents/DSP0227_1.2.0.pdf
+https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-wsmv/90422a55-c14b-45c7-845e-864c698e7cb4
