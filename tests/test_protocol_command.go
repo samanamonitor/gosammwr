@@ -15,6 +15,9 @@ bin/test_protocol_command http://schemas.microsoft.com/wbem/wsman/1/windows/shel
 
 
 func main() {
+    if len(os.Args) < 2 {
+        panic("Invalid number of parameters.")
+    }
     endpoint := os.Getenv("WR_ENDPOINT")
     username := os.Getenv("WR_USERNAME")
     password := os.Getenv("WR_PASSWORD")
@@ -33,7 +36,11 @@ func main() {
 
     if os.Args[1] == "-" {
         reader := bufio.NewReader(os.Stdin)
-        input, _ := reader.ReadString('\n')
+        input, err := reader.ReadString('\n')
+        if err != nil {
+            fmt.Println(err)
+            panic("Invalid input from stdin")
+        }
         input = strings.Trim(input, "\n")
         temp := strings.Split(input, " ")
         resourceURI = temp[0]
