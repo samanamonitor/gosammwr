@@ -13,13 +13,15 @@ import (
 )
 
 func multipart_encode(f *bytes.Buffer, encrypted_message []byte, message_len int) {
-	f.Write([]byte(fmt.Sprint("--Encrypted Boundary\r\n",
-		"Content-Type: application/HTTP-SPNEGO-session-encrypted\r\n",
-		"OriginalContent: type=application/soap+xml;charset=UTF-8;Length=", message_len, "\r\n",
-		"--Encrypted Boundary\r\n",
-		"Content-Type: application/octet-stream\r\n")))
+	f.WriteString("--Encrypted Boundary\r\n")
+	f.WriteString("Content-Type: application/HTTP-SPNEGO-session-encrypted\r\n")
+	f.WriteString(
+		fmt.Sprintf("OriginalContent: type=application/soap+xml;charset=UTF-8;Length=%d\r\n",
+			message_len))
+	f.WriteString("--Encrypted Boundary\r\n")
+	f.WriteString("Content-Type: application/octet-stream\r\n")
 	f.Write(encrypted_message)
-	f.Write([]byte("--Encrypted Boundary--\r\n"))
+	f.WriteString("--Encrypted Boundary--\r\n")
 }
 
 func multipart_decode(data []byte) []byte {
@@ -42,11 +44,11 @@ func (tf *TransportFault) Error() string {
 }
 
 type Transport struct {
-	endpoint_string string
-	endpoint *url.URL
-	username string
-	password string
-	keytab_file string
+	Endpoint string
+	endpoint_url *url.URL
+	Username string
+	Password string
+	Keytab_file string
 	authenticated bool
 	client *http.Client
 	gssAuth gss.Gss
@@ -55,26 +57,18 @@ type Transport struct {
 
 }
 
-func (self *Transport) Init(
-		endpoint string,
-		username string,
-		password string,
-		keytab_file string) error {
+func (self *Transport) Init() error {
 	var err error
-	self.endpoint_string = endpoint
-	self.endpoint, err = url.Parse(endpoint)
+	self.endpoint_url, err = url.Parse(self.Endpoint)
 	if err != nil {
-		panic(err)
+		return err
 	}
-	self.username = username
-	self.password = password
-	self.keytab_file = keytab_file
 
 	self.client = &http.Client{}
 	self.service = "HTTP"
 	self.gssAuth = gss.Gss{}
-	result := self.gssAuth.AuthGssClientInit(self.service + "/" + self.endpoint.Hostname(),
-		self.username, self.password, self.keytab_file, 0)
+	result := self.gssAuth.AuthGssClientInit(self.service + "/" + self.endpoint_url.Hostname(),
+		self.Username, self.Password, self.Keytab_file, 0)
 	if result.Status != gss.AUTH_GSS_COMPLETE {
 		return result
 	}
@@ -82,7 +76,7 @@ func (self *Transport) Init(
 }
 
 func (self *Transport) prepareRequest(message io.Reader) (*http.Request, error) {
-	req, err := http.NewRequest("POST", self.endpoint_string, message)
+	req, err := http.NewRequest("POST", self.Endpoint, message)
 	req.Header.Add("Accept-Encoding", "gzip, deflate")
 	req.Header.Add("Accept", "*.*")
 	req.Header.Add("Connection", "Keep-Alive")
