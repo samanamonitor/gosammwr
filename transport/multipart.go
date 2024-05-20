@@ -51,6 +51,7 @@ func (mp *MultiPart) Decode() (error) {
 func NewMultiPart(Boundary string, message []byte) (*MultiPart) {
 	return &MultiPart{
 		buffer: bytes.NewBuffer(nil),
+		headers: make(map[string]string),
 		boundary: Boundary,
 		body: message,
 	}
