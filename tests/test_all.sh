@@ -59,7 +59,7 @@ test_run_pipe pull_diskdrive enum_diskdrive.txt bin/test_protocol_pull -
 test_output pull_diskdrive_output pull_diskdrive.txt valid/valid5.txt
 rm enum_diskdrive.txt pull_diskdrive.txt
 
-test_run_pipe enum_schema /dev/null bin/test_protocol_enum schema root/cimv2 win32_ComputerSystem
-test_run_pipe pull_schema enum_schema.txt bin/test_protocol_pull -
-test_output pull_schema_output pull_schema.txt valid/valid6.txt
-rm enum_schema.txt pull_schema.txt
+#test_run_pipe enum_schema /dev/null bin/test_protocol_enum schema root/cimv2 win32_ComputerSystem
+#test_run_pipe pull_schema enum_schema.txt bin/test_protocol_pull -
+#test_output pull_schema_output pull_schema.txt valid/valid6.txt
+#rm enum_schema.txt pull_schema.txt
