@@ -1,5 +1,11 @@
 package transport
 
+/*
+TODO:
+
+Move mime boundary from burnt into the code to extracting it from HTTP headers
+*/
+
 import (
 	"net/http"
 	"github.com/samanamonitor/gosammwr/gss"
@@ -22,13 +28,6 @@ func multipart_encode(f *bytes.Buffer, encrypted_message []byte, message_len int
 	f.WriteString("Content-Type: application/octet-stream\r\n")
 	f.Write(encrypted_message)
 	f.WriteString("--Encrypted Boundary--\r\n")
-}
-
-func multipart_decode(data []byte) []byte {
-	elements := bytes.Split(data, []byte("\r\n"))
-	separator := elements[0][:len(elements[0])-2]
-	encrypted_data := bytes.Split(elements[5], separator)
-	return encrypted_data[0]
 }
 
 type TransportFault struct {
@@ -156,14 +155,24 @@ func (self *Transport) SendMessage(message []byte) (error, []byte) {
 		return errors.New(fmt.Sprintf("AuthGSSClientWrapIov failed with maj=%08x min=%d",
 			self.gssAuth.Maj_stat, int32(self.gssAuth.Min_stat))), []byte{}
 	}
+	mp := NewMultiPart("Encrypted Boundary", self.gssAuth.AuthGssClientResponse())
+	mp.AddHeader("Content-Type", "application/HTTP-SPNEGO-session-encrypted")
+	mp.AddHeader("OriginalContent", fmt.Sprintf("type=application/soap+xml;charset=UTF-8;Length=%d", len(message)))
+	mp.Encode()
+	/*
 	f := bytes.NewBuffer(nil)
 	multipart_encode(f, self.gssAuth.AuthGssClientResponse(), len(message))
 	req, _ := self.prepareRequest(f)
+	*/
+	req, _ := self.prepareRequest(mp)
 	resp, _ := self.client.Do(req)
 	defer resp.Body.Close()
 
 	response_data, _ := io.ReadAll(resp.Body)
-	encrypted_message := multipart_decode(response_data)
+	_, encrypted_message, err := MultipartDecode(response_data, []byte("--Encrypted Boundary"))
+	if err != nil {
+		return err, []byte{}
+	}
 	result = self.gssAuth.AuthGSSClientUnwrapIov(encrypted_message)
 	if result.Status != gss.AUTH_GSS_COMPLETE {
 		return result, []byte{}
