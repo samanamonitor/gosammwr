@@ -165,36 +165,36 @@ func processFault(Err error, responseData []byte) (error) {
 	return &soapf
 }
 
-func (p *Protocol) SendMessage(doc *etree.Document) (error, *etree.Document) {
+func (p *Protocol) SendMessage(doc *etree.Document) (*etree.Document, error) {
 	/* TODO: check validity of the response */
 	request, err := doc.WriteToBytes()
 	if err != nil {
-		return err, nil
+		return nil, err
 	}
 /*
 	fmt.Print(string(request))
 */
-	err, response := p.transport.SendMessage(request)
+	response, err := p.transport.SendMessage(request)
 	if err != nil {
-		return processFault(err, response), nil
+		return nil, processFault(err, response)
 	}
 	response_doc := etree.NewDocument()
 	response_doc.ReadFromBytes(response)
 	body := response_doc.FindElement("//Body")
 	if body == nil {
-		return errors.New("Invalid response. Body tag not found"), response_doc
+		return response_doc, errors.New("Invalid response. Body tag not found")
 	}
 
 	var newdoc *etree.Document
 	newdoc = etree.NewDocument()
 	newdoc.SetRoot(body)
 
-	return err, newdoc
+	return newdoc, err
 }
 
 func (p *Protocol) Get(resourceURI string,
 		selectorset *map[string]string, 
-		optionset *map[string]Option) (error, string) {
+		optionset *map[string]Option) (string, error) {
 	action := "http://schemas.xmlsoap.org/ws/2004/09/transfer/Get"
 
 	doc := etree.NewDocument()
@@ -202,22 +202,18 @@ func (p *Protocol) Get(resourceURI string,
 
 	doc.FindElement("//s:Envelope").CreateElement("s:Body")
 
-	err, response := p.SendMessage(doc)
-	if err != nil {
-		if response == nil {
-			return err, ""
-		}
-		r, _ := response.WriteToString()
-		return err, r
+	response, err := p.SendMessage(doc)
+	if err != nil && response == nil {
+		return "", err
 	}
 	ret, _ := response.WriteToString()
-	return err, ret
+	return ret, err
 }
 
 func (p *Protocol) Enumerate(resourceURI string,
 		filter *Filter,
 		selectorset *map[string]string,
-		optionset *map[string]Option) (error, string) {
+		optionset *map[string]Option) (string, error) {
 	action := "http://schemas.xmlsoap.org/ws/2004/09/enumeration/Enumerate"
 
 	doc := etree.NewDocument()
@@ -240,27 +236,27 @@ func (p *Protocol) Enumerate(resourceURI string,
 			}
 		}
 	}
-	err, response := p.SendMessage(doc)
+	response, err := p.SendMessage(doc)
 	if err != nil {
 		if response == nil {
-			return err, ""
+			return "", err
 		}
 		r, _ := response.WriteToString()
-		return err, r
+		return r, err
 	}
 	EnumerationContext := response.FindElement("//EnumerationContext")
 	if EnumerationContext == nil {
 		ret, _ := response.WriteToString()
-		return errors.New("Response did not contain EnumerationContext.\n" + ret), ""
+		return "", errors.New("Response did not contain EnumerationContext.\n" + ret)
 	}
-	return nil, EnumerationContext.Text()[5:]
+	return EnumerationContext.Text()[5:], nil
 }
 
 func (p *Protocol) Pull(resourceURI string,
 		EnumerationContext string,
 		MaxElements int,
 		selectorset *map[string]string,
-		optionset *map[string]Option) (error, string, string) {
+		optionset *map[string]Option) (string, string, error) {
 	action := "http://schemas.xmlsoap.org/ws/2004/09/enumeration/Pull"
 
 	doc := etree.NewDocument()
@@ -275,13 +271,13 @@ func (p *Protocol) Pull(resourceURI string,
 			fmt.Sprint(MaxElements))
 	}
 
-	err, response := p.SendMessage(doc)
+	response, err := p.SendMessage(doc)
 	if err != nil {
 		if response == nil {
-			return err, "", ""
+			return "", "", err
 		}
 		r, _ := response.WriteToString()
-		return err, r, ""
+		return r, "", err
 	}
 	pull_ec := response.FindElement("//EnumerationContext")
 	var ec string
@@ -293,17 +289,17 @@ func (p *Protocol) Pull(resourceURI string,
 	PullResponse := response.FindElement("//PullResponse")
 	if PullResponse == nil {
 		ret, _ := response.WriteToString()
-		return errors.New("Invalid Response. PullResponse tag missing.\n" + ret), "", ""
+		return "", "", errors.New("Invalid Response. PullResponse tag missing.\n" + ret)
 	}
 	newdoc := etree.NewDocument()
 	newdoc.SetRoot(PullResponse)
 	ret, _ := newdoc.WriteToString()
-	return nil, ec, ret
+	return ec, ret, nil
 }
 
 func (p *Protocol) Release(resourceURI string,
 		EnumerationContext string,
-		optionset *map[string]Option) (error, string) {
+		optionset *map[string]Option) (string, error) {
 	action := "http://schemas.xmlsoap.org/ws/2004/09/enumeration/Release"
 
 	doc := etree.NewDocument()
@@ -315,20 +311,18 @@ func (p *Protocol) Release(resourceURI string,
 	pull.CreateElement("wsen:EnumerationContext").CreateText(
 		fmt.Sprint("uuid:", EnumerationContext))
 
-	err, response := p.SendMessage(doc)
+	response, err := p.SendMessage(doc)
 	if err != nil {
 		if response == nil {
-			return err, ""
+			return "", err
 		}
-		r, _ := response.WriteToString()
-		return err, r
 	}
 	ret, _ := response.WriteToString()
-	return err, ret
+	return ret, err
 }
 
 func (p *Protocol) Create(resourceURI string, instance *etree.Element,
-		optionset *map[string]Option) (error, string) {
+		optionset *map[string]Option) (string, error) {
 	action := "http://schemas.xmlsoap.org/ws/2004/09/transfer/Create"
 
 	doc := etree.NewDocument()
@@ -336,20 +330,18 @@ func (p *Protocol) Create(resourceURI string, instance *etree.Element,
 	
 	doc.FindElement("//s:Envelope").CreateElement("s:Body").AddChild(instance)
 
-	err, response := p.SendMessage(doc)
+	response, err := p.SendMessage(doc)
 	if err != nil {
 		if response == nil {
-			return err, ""
+			return "", err
 		}
-		r, _ := response.WriteToString()
-		return err, r
 	}
 	ret, _ := response.WriteToString()
-	return err, ret
+	return ret, err
 }
 
 func (p *Protocol) Delete(resourceURI string, selectorset *map[string]string,
-		optionset *map[string]Option) (error, string) {
+		optionset *map[string]Option) (string, error) {
 	/* TODO: selectorset is mandatory. Should fail if it is missing */
 	action := "http://schemas.xmlsoap.org/ws/2004/09/transfer/Delete"
 
@@ -358,20 +350,18 @@ func (p *Protocol) Delete(resourceURI string, selectorset *map[string]string,
 	
 	doc.FindElement("//s:Envelope").CreateElement("s:Body")
 
-	err, response := p.SendMessage(doc)
+	response, err := p.SendMessage(doc)
 	if err != nil {
 		if response == nil {
-			return err, ""
+			return "", err
 		}
-		r, _ := response.WriteToString()
-		return err, r
 	}
 	ret, _ := response.WriteToString()
-	return err, ret
+	return ret, err
 }
 
 func (p *Protocol) Command(resourceURI string, command_body *etree.Element, selectorset *map[string]string,
-		optionset *map[string]Option) (error, string) {
+		optionset *map[string]Option) (string, error) {
 	action := "http://schemas.microsoft.com/wbem/wsman/1/windows/shell/Command"
 
 	doc := etree.NewDocument()
@@ -379,20 +369,18 @@ func (p *Protocol) Command(resourceURI string, command_body *etree.Element, sele
 	
 	doc.FindElement("//s:Envelope").CreateElement("s:Body").AddChild(command_body)
 
-	err, response := p.SendMessage(doc)
+	response, err := p.SendMessage(doc)
 	if err != nil {
 		if response == nil {
-			return err, ""
+			return "", err
 		}
-		r, _ := response.WriteToString()
-		return err, r
 	}
 	ret, _ := response.WriteToString()
-	return err, ret
+	return ret, err
 }
 
 func (p *Protocol) Receive(resourceURI string, receive_body *etree.Element, selectorset *map[string]string,
-		optionset *map[string]Option) (error, string) {
+		optionset *map[string]Option) (string, error) {
 	action := "http://schemas.microsoft.com/wbem/wsman/1/windows/shell/Receive"
 
 	doc := etree.NewDocument()
@@ -400,20 +388,18 @@ func (p *Protocol) Receive(resourceURI string, receive_body *etree.Element, sele
 	
 	doc.FindElement("//s:Envelope").CreateElement("s:Body").AddChild(receive_body)
 
-	err, response := p.SendMessage(doc)
+	response, err := p.SendMessage(doc)
 	if err != nil {
 		if response == nil {
-			return err, ""
+			return "", err
 		}
-		r, _ := response.WriteToString()
-		return err, r
 	}
 	ret, _ := response.WriteToString()
-	return err, ret
+	return ret, err
 }
 
 func (p *Protocol) Send(resourceURI string, send_body *etree.Element, selectorset *map[string]string,
-		optionset *map[string]Option) (error, string) {
+		optionset *map[string]Option) (string, error) {
 	action := "http://schemas.microsoft.com/wbem/wsman/1/windows/shell/Send"
 
 	doc := etree.NewDocument()
@@ -421,20 +407,18 @@ func (p *Protocol) Send(resourceURI string, send_body *etree.Element, selectorse
 	
 	doc.FindElement("//s:Envelope").CreateElement("s:Body").AddChild(send_body)
 
-	err, response := p.SendMessage(doc)
+	response, err := p.SendMessage(doc)
 	if err != nil {
 		if response == nil {
-			return err, ""
+			return "", err
 		}
-		r, _ := response.WriteToString()
-		return err, r
 	}
 	ret, _ := response.WriteToString()
-	return err, ret
+	return ret, err
 }
 
 func (p *Protocol) Signal(resourceURI string, signal_body *etree.Element, selectorset *map[string]string, 
-		optionset *map[string]Option) (error, string) {
+		optionset *map[string]Option) (string, error) {
 	action := "http://schemas.microsoft.com/wbem/wsman/1/windows/shell/Signal"
 
 	doc := etree.NewDocument()
@@ -442,14 +426,12 @@ func (p *Protocol) Signal(resourceURI string, signal_body *etree.Element, select
 	
 	doc.FindElement("//s:Envelope").CreateElement("s:Body").AddChild(signal_body)
 
-	err, response := p.SendMessage(doc)
+	response, err := p.SendMessage(doc)
 	if err != nil {
 		if response == nil {
-			return err, ""
+			return "", err
 		}
-		r, _ := response.WriteToString()
-		return err, r
 	}
 	ret, _ := response.WriteToString()
-	return err, ret
+	return ret, err
 }
