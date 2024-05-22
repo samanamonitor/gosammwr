@@ -13,10 +13,15 @@ type MultiPart struct {
 
 	body []byte
 	buffer *bytes.Buffer
+	encoded bool
 }
 
-func (mp *MultiPart) Read(p []byte) (n int, err error) {
-	return mp.buffer.Read(p)
+func (mp *MultiPart) Body() (*bytes.Buffer) {
+	if ! mp.encoded {
+		mp.Encode()
+		mp.encoded = true
+	}
+	return mp.buffer
 }
 
 func (mp *MultiPart) AddHeader(key string, value string) {
@@ -32,16 +37,22 @@ func (mp *MultiPart) WriteBoundary(end bool) {
 	mp.buffer.WriteString("\r\n")
 }
 
-func (mp *MultiPart) Encode() (*bytes.Buffer) {
+func (mp *MultiPart) GetHeader(key string) (value string) {
+	return fmt.Sprintf("%s: %s\r\n", key, mp.headers[key])
+}
+
+func (mp *MultiPart) Encode() () {
+	/*
+	NOTE IMPORTANT!!! Windows will reject requests with the headers in a different order
+	https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-wsmv/080c0681-bc50-412d-b9ca-42047a8011d5
+	*/
 	mp.WriteBoundary(false)
-	for k, v := range mp.headers {
-		mp.buffer.WriteString(fmt.Sprintf("%s: %s\r\n", k, v))
-	}
+	mp.buffer.WriteString(mp.GetHeader("Content-Type"))
+	mp.buffer.WriteString(mp.GetHeader("OriginalContent"))
 	mp.WriteBoundary(false)
 	mp.buffer.WriteString("Content-Type: application/octet-stream\r\n")
 	mp.buffer.Write(mp.body)
 	mp.WriteBoundary(true)
-	return mp.buffer
 }
 
 func (mp *MultiPart) Decode() (error) {
@@ -54,6 +65,7 @@ func NewMultiPart(Boundary string, message []byte) (*MultiPart) {
 		headers: make(map[string]string),
 		boundary: Boundary,
 		body: message,
+		encoded: false,
 	}
 }
 
@@ -106,9 +118,10 @@ func extractHeader(data []byte) ([]byte, string, string, error) {
 	return data, key, value, nil
 }
 
-func MultipartDecode(data []byte, boundary []byte) (map[string]string, []byte, error) {
+func MultipartDecode(data []byte, boundary_string string) (map[string]string, []byte, error) {
 	headers := make(map[string]string)
 	body := []byte{}
+	boundary := []byte(fmt.Sprint("--", boundary_string))
 
 	for {
 		var section []byte
