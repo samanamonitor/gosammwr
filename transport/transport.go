@@ -18,18 +18,6 @@ import (
 	"errors"
 )
 
-func multipart_encode(f *bytes.Buffer, encrypted_message []byte, message_len int) {
-	f.WriteString("--Encrypted Boundary\r\n")
-	f.WriteString("Content-Type: application/HTTP-SPNEGO-session-encrypted\r\n")
-	f.WriteString(
-		fmt.Sprintf("OriginalContent: type=application/soap+xml;charset=UTF-8;Length=%d\r\n",
-			message_len))
-	f.WriteString("--Encrypted Boundary\r\n")
-	f.WriteString("Content-Type: application/octet-stream\r\n")
-	f.Write(encrypted_message)
-	f.WriteString("--Encrypted Boundary--\r\n")
-}
-
 type TransportFault struct {
 	Err error
 	StatusCode int
@@ -53,14 +41,25 @@ type Transport struct {
 	gssAuth gss.Gss
 	service string
 	challenge []byte
-
+	MultipartBoundary string
+	ProtoString string
+	ContentType string
+	Encrypt bool
 }
 
-func (self *Transport) Init() error {
+func NewTransport(endpoint string, username string, password string, keytab_file string) (*Transport, error) {
 	var err error
+
+	self := &Transport{
+		Endpoint: endpoint,
+		Username: username,
+		Password: password,
+		Keytab_file: keytab_file,
+	}
+
 	self.endpoint_url, err = url.Parse(self.Endpoint)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	self.client = &http.Client{}
@@ -69,19 +68,114 @@ func (self *Transport) Init() error {
 	result := self.gssAuth.AuthGssClientInit(self.service + "/" + self.endpoint_url.Hostname(),
 		self.Username, self.Password, self.Keytab_file, 0)
 	if result.Status != gss.AUTH_GSS_COMPLETE {
-		return result
+		return nil, result
 	}
-	return nil
+	self.MultipartBoundary = "SAMM Encrypted Boundary"
+	self.ProtoString = "application/HTTP-SPNEGO-session-encrypted"
+	self.ContentType = "application/soap+xml;charset=UTF-8"
+	self.Encrypt = true
+	return self, nil
 }
 
-func (self *Transport) prepareRequest(message io.Reader) (*http.Request, error) {
-	req, err := http.NewRequest("POST", self.Endpoint, message)
+func (self *Transport) prepareRequest(message []byte) (*http.Request, error) {
+	body := bytes.NewBuffer(nil)
+	var content_type string
+
+	if len(message) > 0 {
+		if self.Encrypt {
+			result := self.gssAuth.AuthGSSClientWrapIov(message)
+			if result.Status != gss.AUTH_GSS_COMPLETE {
+				return nil, result
+			}
+
+			encrypted_request := self.gssAuth.AuthGssClientResponse()
+			mp := NewMultiPart(self.MultipartBoundary, encrypted_request)
+			mp.AddHeader("Content-Type", self.ProtoString)
+			mp.AddHeader("OriginalContent", fmt.Sprintf("type=%s;Length=%d", self.ContentType, len(message)))
+
+			body = mp.Body()
+			content_type = fmt.Sprint("multipart/encrypted;protocol=\"", self.ProtoString, "\"",
+				";boundary=\"", self.MultipartBoundary, "\"")
+
+		} else {
+			body.Write(message)
+			content_type = self.ContentType
+		}
+	}
+
+	req, err := http.NewRequest("POST", self.Endpoint, body)
 	req.Header.Add("Accept-Encoding", "gzip, deflate")
 	req.Header.Add("Accept", "*.*")
 	req.Header.Add("Connection", "Keep-Alive")
-	req.Header.Add("Content-Type", "multipart/encrypted;protocol=\"application/HTTP-SPNEGO-session-encrypted\";boundary=\"Encrypted Boundary\"");
+	req.Header.Add("Content-Type", content_type);
 
 	return req, err
+}
+
+func extractBoundary(content_types []string) (string, error) {
+	var boundary string
+	for j := range content_types {
+		content_type := content_types[j]
+		params := strings.Split(content_type, ";")
+		for i := range params {
+			if strings.HasPrefix(params[i], "boundary") {
+				temp := strings.Split(params[i], "=")
+				if len(temp) != 2 {
+					return "", errors.New("Invalid Content-Type header. Boundary missing.")
+				}
+				boundary = temp[1]
+				if boundary[0] == '"' {
+					boundary = boundary[1:]
+				}
+				if boundary[len(boundary)-1] == '"' {
+					boundary = boundary[:len(boundary)-1]
+				}
+				return boundary, nil
+			}
+		}
+	}
+	return "", errors.New("Missing boundary string.")
+}
+
+func (self *Transport) processResponse(resp *http.Response) ([]byte, error) {
+	if resp.StatusCode == 400 {
+		err := TransportFault {
+			StatusCode: resp.StatusCode,
+			Message: "Server couldn't decode message",
+		}
+		return []byte(""), &err
+	}
+
+	response_data, _ := io.ReadAll(resp.Body)
+	var response_clear []byte
+
+	if self.Encrypt {
+		boundary, err := extractBoundary(resp.Header["Content-Type"])
+		if err != nil {
+			return []byte{}, err
+		}
+
+		_, encrypted_message, err := MultipartDecode(response_data, boundary)
+		if err != nil {
+			return []byte{}, err
+		}
+		result := self.gssAuth.AuthGSSClientUnwrapIov(encrypted_message)
+		if result.Status != gss.AUTH_GSS_COMPLETE {
+			return []byte{}, result
+		}
+		response_clear = self.gssAuth.AuthGssClientResponse()
+	} else {
+		response_clear = response_data
+	}
+	if resp.StatusCode != 200 {
+		err := TransportFault {
+			StatusCode: resp.StatusCode,
+			Message: "Details in Payload",
+			Payload: response_clear,
+		}
+		return response_clear, &err
+	}
+	return response_clear, nil
 }
 
 func (self *Transport) BuildSession() error {
@@ -101,7 +195,7 @@ func (self *Transport) BuildSession() error {
 			/* send to server */
 			challenge_b64 := base64.StdEncoding.EncodeToString(challenge)
 
-			req, err := self.prepareRequest(bytes.NewBuffer(nil))
+			req, err := self.prepareRequest([]byte(""))
 			if err != nil {
 				return err
 			}
@@ -141,53 +235,23 @@ func (self *Transport) BuildSession() error {
 	return nil
 }
 
-func (self *Transport) SendMessage(message []byte) (error, []byte) {
+func (self *Transport) SendMessage(message []byte) ([]byte, error) {
 	var err error
 
 	if self.authenticated == false {
 		err = self.BuildSession()
 		if err != nil {
-			return err, []byte{}
+			return []byte{}, err
 		}
 	}
-	result := self.gssAuth.AuthGSSClientWrapIov(message)
-	if result.Status != gss.AUTH_GSS_COMPLETE {
-		return errors.New(fmt.Sprintf("AuthGSSClientWrapIov failed with maj=%08x min=%d",
-			self.gssAuth.Maj_stat, int32(self.gssAuth.Min_stat))), []byte{}
+	req, err := self.prepareRequest(message)
+	if err != nil {
+		return []byte{}, err
 	}
-	mp := NewMultiPart("Encrypted Boundary", self.gssAuth.AuthGssClientResponse())
-	mp.AddHeader("Content-Type", "application/HTTP-SPNEGO-session-encrypted")
-	mp.AddHeader("OriginalContent", fmt.Sprintf("type=application/soap+xml;charset=UTF-8;Length=%d", len(message)))
-	mp.Encode()
-	/*
-	f := bytes.NewBuffer(nil)
-	multipart_encode(f, self.gssAuth.AuthGssClientResponse(), len(message))
-	req, _ := self.prepareRequest(f)
-	*/
-	req, _ := self.prepareRequest(mp)
 	resp, _ := self.client.Do(req)
 	defer resp.Body.Close()
 
-	response_data, _ := io.ReadAll(resp.Body)
-	_, encrypted_message, err := MultipartDecode(response_data, []byte("--Encrypted Boundary"))
-	if err != nil {
-		return err, []byte{}
-	}
-	result = self.gssAuth.AuthGSSClientUnwrapIov(encrypted_message)
-	if result.Status != gss.AUTH_GSS_COMPLETE {
-		return result, []byte{}
-	}
-	response_clear := self.gssAuth.AuthGssClientResponse()
-	if resp.StatusCode != 200 {
-		err := TransportFault {
-			StatusCode: resp.StatusCode,
-			Message: "Details in Payload",
-			Payload: response_clear,
-		}
-		return &err, response_clear
-	}
-
-	return nil, response_clear
+	return self.processResponse(resp)
 }
 
 func (self *Transport) Close() error {
