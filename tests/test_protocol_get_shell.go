@@ -32,7 +32,7 @@ func main() {
         "ShellId": os.Args[1],
     }
 
-    err, response_doc := prot.Get(resourceURI, &selectorset, nil)
+    response_doc, err := prot.Get(resourceURI, &selectorset, nil)
     if err != nil {
         fmt.Println(response_doc)
         panic(err)

@@ -43,7 +43,7 @@ func main() {
 
     var response string
     for ; ec != ""; {
-        err, ec, response = prot.Pull(resourceURI, ec, 5, nil, nil)
+        ec, response, err = prot.Pull(resourceURI, ec, 5, nil, nil)
         if err != nil {
             fmt.Println(response)
             panic(err)

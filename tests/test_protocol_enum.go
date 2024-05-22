@@ -75,7 +75,7 @@ func main() {
         panic("Invaid parameter. Only resourceuri or schema allowed")
     }
 
-    err, response_doc := prot.Enumerate(resourceURI, filter, selectorset, optionset)
+    response_doc, err := prot.Enumerate(resourceURI, filter, selectorset, optionset)
     if err != nil {
         fmt.Println(response_doc)
         panic(err)

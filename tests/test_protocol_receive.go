@@ -70,7 +70,7 @@ func main() {
     DesiredStream.CreateAttr("CommandId", CommandId)
     DesiredStream.CreateText("stdout stderr")
 
-    err, response := prot.Receive(resourceURI, Receive, &selectorset, nil)
+    response, err := prot.Receive(resourceURI, Receive, &selectorset, nil)
     if err != nil {
         fmt.Println(response)
         panic(err)

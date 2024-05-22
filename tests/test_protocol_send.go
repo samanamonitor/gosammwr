@@ -40,7 +40,7 @@ func main() {
     Stream.CreateAttr("End", "false")
     Stream.CreateText(base64.StdEncoding.EncodeToString([]byte("exit\r\n")))
 
-    err, response := prot.Send(resourceURI, Send, &selectorset, nil)
+    response, err := prot.Send(resourceURI, Send, &selectorset, nil)
     if err != nil {
         fmt.Println(response)
         panic(err)

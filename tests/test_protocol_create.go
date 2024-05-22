@@ -69,7 +69,7 @@ func main() {
         "WINRS_CODEPAGE": { Value: "437", Type: "xs:unsignedInt" },
     }
 
-    err, response := prot.Create(resourceURI, shell, &optionset)
+    response, err := prot.Create(resourceURI, shell, &optionset)
     if err != nil {
         fmt.Println(response)
         panic(err)

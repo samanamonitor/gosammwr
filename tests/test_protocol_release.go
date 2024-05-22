@@ -43,7 +43,7 @@ func main() {
     }
     defer prot.Close()
 
-    err, response := prot.Release(resourceURI, uuid, nil)
+    response, err := prot.Release(resourceURI, uuid, nil)
     if err != nil {
         fmt.Println(response)
         panic(err)

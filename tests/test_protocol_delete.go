@@ -51,7 +51,7 @@ func main() {
         "ShellId": ShellId,
     }
 
-    err, response := prot.Delete(resourceURI, &selectorset, nil)
+    response, err := prot.Delete(resourceURI, &selectorset, nil)
     if err != nil {
         fmt.Println(response)
         panic(err)

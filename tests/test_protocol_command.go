@@ -69,7 +69,7 @@ func main() {
         CommandLine.CreateElement("rsp:Arguments").CreateText(command[i])
     }
 
-    err, body_str := prot.Command(resourceURI, CommandLine, &selectorset, &optionset)
+    body_str, err := prot.Command(resourceURI, CommandLine, &selectorset, &optionset)
     if err != nil {
         panic(err)
     }
