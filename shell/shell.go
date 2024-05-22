@@ -47,18 +47,18 @@ func (s *Shell) Cleanup() {
 	s.prot.Close()
 }
 
-func (s *Shell) List() (error, []ShellInstance){
+func (s *Shell) List() ([]ShellInstance, error){
 	resourceURI := "http://schemas.microsoft.com/wbem/wsman/1/windows/shell"
-	err, EnumerationContext := s.prot.Enumerate(resourceURI, nil, nil, nil)
+	EnumerationContext, err := s.prot.Enumerate(resourceURI, nil, nil, nil)
 	if err != nil {
-		return err, []ShellInstance{}
+		return []ShellInstance{}, err
 	}
 	var out []ShellInstance
 	for ; len(EnumerationContext) > 0; {
 		var PullResponse string
-		err, EnumerationContext, PullResponse = s.prot.Pull(resourceURI, EnumerationContext, -1, nil, nil)
+		EnumerationContext, PullResponse, err = s.prot.Pull(resourceURI, EnumerationContext, -1, nil, nil)
 		if err != nil {
-			return err, []ShellInstance{}
+			return []ShellInstance{}, err
 		}
 		et_PullResponse := etree.NewDocument()
 		et_PullResponse.ReadFromString(PullResponse)
@@ -70,29 +70,29 @@ func (s *Shell) List() (error, []ShellInstance){
 		}
 
 	}
-	return err, out
+	return out, err
 }
 
-func (s *Shell) Get(ShellId string) (error, ShellInstance) {
+func (s *Shell) Get(ShellId string) (ShellInstance, error) {
 	resourceURI := "http://schemas.microsoft.com/wbem/wsman/1/windows/shell"
 	selectorset := map[string]string {
 		"ShellId": ShellId,
 	}
-	err, si_xml := s.prot.Get(resourceURI, &selectorset, nil)
+	si_xml, err := s.prot.Get(resourceURI, &selectorset, nil)
 	if err != nil {
-		return err, ShellInstance{}
+		return ShellInstance{}, err
 	}
 	GetResponse := etree.NewDocument()
 	GetResponse.ReadFromString(si_xml)
 	si := ShellInstance{}
 	si.FromEtreeElement(GetResponse.FindElement("//Shell"))
-	return nil, si
+	return si, nil
 
 }
 
 func (s *Shell) Create(InputStreams []string, OutputStreams []string, Name string,
 		Environment map[string]string, WorkingDirectory string, 
-		Lifetime string, IdleTimeOut string)  (error, ShellInstance) {
+		Lifetime string, IdleTimeOut string)  (ShellInstance, error) {
 	/*
 	TODO: Create a struct for Resource Created object?
 	https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-wsmv/593f3ed0-0c7a-4158-a4be-0b429b597e31
@@ -135,16 +135,16 @@ func (s *Shell) Create(InputStreams []string, OutputStreams []string, Name strin
 		Value: "437",
 		Type: "xs:unsignedInt",
 	}
-	err, body_str := s.prot.Create(resourceURI, shell, &optionset)
+	body_str, err := s.prot.Create(resourceURI, shell, &optionset)
 	if err != nil {
-		return err, ShellInstance{}
+		return ShellInstance{}, err
 	}
 	Body := etree.NewDocument()
 	Body.ReadFromString(body_str)
 	Shell := Body.FindElement("//Shell")
 	si := ShellInstance{}
 	si.FromEtreeElement(Shell)
-	return nil, si
+	return si, nil
 }
 
 func (s *Shell) Delete(ShellId string) (error) {
@@ -152,12 +152,12 @@ func (s *Shell) Delete(ShellId string) (error) {
     selectorset := map[string]string {
         "ShellId": ShellId,
     }
-    err, _ := s.prot.Delete(resourceURI, &selectorset, nil)
+    _, err := s.prot.Delete(resourceURI, &selectorset, nil)
     return err
 }
 
 func (s *Shell) Command(ShellId string, command []string, SkipCmdShell bool, ConsoleModeStdin bool, 
-		optionset *map[string]protocol.Option) (error, string) {
+		optionset *map[string]protocol.Option) (string, error) {
 	resourceURI := "http://schemas.microsoft.com/wbem/wsman/1/windows/shell/cmd"
 
 	selectorset := map[string]string{
@@ -176,7 +176,7 @@ func (s *Shell) Command(ShellId string, command []string, SkipCmdShell bool, Con
 	}
 
 	if len(command) < 1 {
-		return errors.New("command array must have at least 1 element"), ""
+		return "", errors.New("command array must have at least 1 element")
 	}
 	CommandLine := etree.NewElement("rsp:CommandLine")
 	CommandLine.CreateElement("rsp:Command").CreateText(command[0])
@@ -184,14 +184,14 @@ func (s *Shell) Command(ShellId string, command []string, SkipCmdShell bool, Con
 		CommandLine.CreateElement("rsp:Arguments").CreateText(command[i])
 	}
 
-	err, body_str := s.prot.Command(resourceURI, CommandLine, &selectorset, optionset)
+	body_str, err := s.prot.Command(resourceURI, CommandLine, &selectorset, optionset)
 	if err != nil {
-		return err, ""
+		return "", err
 	}
 	Body := etree.NewDocument()
 	Body.ReadFromString(body_str)
 	CommandId := Body.FindElement("//CommandId")
-	return nil, CommandId.Text()
+	return CommandId.Text(), nil
 }
 
 const (
@@ -210,7 +210,7 @@ type StreamType struct {
 	Data []byte
 }
 
-func (s *Shell) Receive(ShellId string, CommandId string, Streams []string) (error, CommandState, []StreamType) {
+func (s *Shell) Receive(ShellId string, CommandId string, Streams []string) (CommandState, []StreamType, error) {
 	resourceURI := "http://schemas.microsoft.com/wbem/wsman/1/windows/shell/cmd"
 
 	selectorset := map[string]string{
@@ -226,9 +226,9 @@ func (s *Shell) Receive(ShellId string, CommandId string, Streams []string) (err
     DesiredStream.CreateText(strings.Join(Streams, " "))
 
 
-    err, body_str := s.prot.Receive(resourceURI, Receive, &selectorset, nil)
+    body_str, err := s.prot.Receive(resourceURI, Receive, &selectorset, nil)
     if err != nil {
-		return err, cs, response
+		return cs, response, err
     }
 	Body := etree.NewDocument()
 	Body.ReadFromString(body_str)
@@ -237,7 +237,7 @@ func (s *Shell) Receive(ShellId string, CommandId string, Streams []string) (err
 		for _, element := range(stream_elements) {
 			temp_str2, err := b64.StdEncoding.DecodeString(element.Text())
 			if err != nil {
-				return err, cs, response
+				return cs, response, err
 			}
 			response[i].Data = append(response[i].Data, temp_str2...)
 			end_attr := element.SelectAttr("End")
@@ -254,18 +254,18 @@ func (s *Shell) Receive(ShellId string, CommandId string, Streams []string) (err
 	state_attr := cs_element.SelectAttr("State")
 	if state_attr == nil {
 		err = errors.New("Invalid response. CommandState is not in response.\n" + body_str)
-		return err, cs, response
+		return cs, response, err
 	}
 	if state_attr.Value == "http://schemas.microsoft.com/wbem/wsman/1/windows/shell/CommandState/Done" {
 		cs.StateEnum = CommandDone
 		exit_code_element := cs_element.FindElement("//rsp:ExitCode")
 		if exit_code_element == nil {
 			err = errors.New("Invalid CommandState response. Missing ExitCode.\n" + body_str)
-			return err, cs, response
+			return cs, response, err
 		}
 		cs.ExitCode, err = strconv.Atoi(exit_code_element.Text())
 		if err != nil {
-			return err, cs, response
+			return cs, response, err
 		}
 	} else if state_attr.Value == "http://schemas.microsoft.com/wbem/wsman/1/windows/shell/CommandState/Pending" {
 		cs.StateEnum = CommandPending
@@ -273,13 +273,13 @@ func (s *Shell) Receive(ShellId string, CommandId string, Streams []string) (err
 		cs.StateEnum = CommandRunning
 	} else {
 		err = errors.New("Invalid CommandState value.\n" + body_str)
-		return err, cs, response
+		return cs, response, err
 	}
 
-	return err, cs, response
+	return cs, response, err
 }
 
-func (s *Shell) Send(ShellId string, CommandId string, Data string, Stream string, End bool) (error, string) {
+func (s *Shell) Send(ShellId string, CommandId string, Data string, Stream string, End bool) (string, error) {
     resourceURI := "http://schemas.microsoft.com/wbem/wsman/1/windows/shell/cmd"
 
     selectorset := map[string]string {
@@ -293,11 +293,11 @@ func (s *Shell) Send(ShellId string, CommandId string, Data string, Stream strin
     stream_element.CreateAttr("End", boolToString[End])
     stream_element.CreateText(b64.StdEncoding.EncodeToString([]byte(Data)))
 
-    err, response := s.prot.Send(resourceURI, send_element, &selectorset, nil)
+    response, err := s.prot.Send(resourceURI, send_element, &selectorset, nil)
     if err != nil {
-    	return err, ""
+    	return "", err
     }
-    return err, response
+    return response, err
 }
 
 func (si *ShellInstance) FromEtreeElement(ete *etree.Element) {
