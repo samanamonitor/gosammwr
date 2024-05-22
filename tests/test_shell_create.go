@@ -23,7 +23,7 @@ func main() {
         "FBTEST": "123",
     }
 
-    err, l := shell.Create([]string{"stdin"}, []string{"stdout", "stderr"}, "",
+    l, err:= shell.Create([]string{"stdin"}, []string{"stdout", "stderr"}, "",
         Environment, "c:\\Users", 
         "P0Y0M0DT0H5M0S", "P0Y0M0DT0H5M0S")
     if err != nil {

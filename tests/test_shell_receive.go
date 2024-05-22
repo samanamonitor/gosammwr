@@ -25,7 +25,7 @@ func main() {
     fmt.Printf("Init Complete\n")
 
     for ; ; {
-        err, cs, response_streams := s.Receive(os.Args[1], os.Args[2], []string{os.Args[3]})
+        cs, response_streams, err := s.Receive(os.Args[1], os.Args[2], []string{os.Args[3]})
         if err != nil {
             panic(err)
         }

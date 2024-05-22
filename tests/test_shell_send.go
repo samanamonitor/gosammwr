@@ -24,7 +24,7 @@ func main() {
     defer shell.Cleanup()
     fmt.Printf("Init Complete\n")
 
-    err, response := shell.Send(os.Args[1], os.Args[2], os.Args[3] + "\r\n", "stdin", false)
+    response, err := shell.Send(os.Args[1], os.Args[2], os.Args[3] + "\r\n", "stdin", false)
     if err != nil {
         panic(err)
     }

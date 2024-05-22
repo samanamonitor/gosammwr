@@ -22,7 +22,7 @@ func main() {
         panic(err)
     }
 
-    err, si := shell.Get(os.Args[1])
+    si, err:= shell.Get(os.Args[1])
     if err != nil {
     	panic(err)
     }

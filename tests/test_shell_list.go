@@ -19,7 +19,7 @@ func main() {
         panic(err)
     }
 
-    err, l := shell.List()
+    l, err := shell.List()
     if err != nil {
     	fmt.Println(l)
     	panic(err)

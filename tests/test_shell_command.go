@@ -26,7 +26,7 @@ func main() {
     }
     defer shell.Cleanup()
 
-    err, response := shell.Command(os.Args[1], os.Args[2:], true, true, nil)
+    response, err := shell.Command(os.Args[1], os.Args[2:], true, true, nil)
     if err != nil {
         fmt.Println(response)
         panic(err)
