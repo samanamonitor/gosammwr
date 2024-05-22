@@ -31,14 +31,12 @@ func (p *Protocol) Init (endpoint string,
 		password string,
 		keytab_file string) error {
 
-	transport := transport.Transport{
-		Endpoint: endpoint,
-		Username: username,
-		Password: password,
-		Keytab_file: keytab_file,
-	}
-	p.transport = &transport
-	err := p.transport.Init()
+	var err error
+	p.transport, err = transport.NewTransport(
+		endpoint,
+		username,
+		password,
+		keytab_file)
 	if err != nil {
 		return err
 	}
