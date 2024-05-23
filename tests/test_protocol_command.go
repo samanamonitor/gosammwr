@@ -23,8 +23,7 @@ func main() {
     password := os.Getenv("WR_PASSWORD")
     keytab_file := os.Getenv("WR_KEYTAB")
 
-    prot := protocol.Protocol{}
-    err := prot.Init(endpoint, username, password, keytab_file)
+    prot, err := protocol.NewProtocol(endpoint, username, password, keytab_file)
     if err != nil {
         panic(err)
     }
@@ -52,13 +51,12 @@ func main() {
         command = os.Args[3:]
     }
 
-    selectorset := map[string]string{
+    ss := protocol.SelectorSet{
         "ShellId": ShellId,
     }
-    optionset := map[string]protocol.Option {
-        "WINRS_CONSOLEMODE_STDIN": { Value: "TRUE", Type: "xs:boolean" },
-        "WINRS_SKIP_CMD_SHELL": { Value: "TRUE", Type: "xs:boolean" },
-    }
+    optionset := protocol.OptionSet{}
+    optionset.Add("WINRS_CONSOLEMODE_STDIN", "xs:boolean", "TRUE")
+    optionset.Add("WINRS_SKIP_CMD_SHELL", "xs:boolean", "TRUE")
 
     if len(command) < 1 {
         panic("command array must have at least 1 element")
@@ -69,7 +67,7 @@ func main() {
         CommandLine.CreateElement("rsp:Arguments").CreateText(command[i])
     }
 
-    body_str, err := prot.Command(resourceURI, CommandLine, &selectorset, &optionset)
+    body_str, err := prot.Command(resourceURI, CommandLine, ss, optionset)
     if err != nil {
         panic(err)
     }

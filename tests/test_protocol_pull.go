@@ -21,8 +21,7 @@ func main() {
     var resourceURI string
     var ec string
 
-    prot := protocol.Protocol{}
-    err := prot.Init(endpoint, username, password, keytab_file)
+    prot, err := protocol.NewProtocol(endpoint, username, password, keytab_file)
     if err != nil {
         panic(err)
     }
@@ -31,7 +30,7 @@ func main() {
         reader := bufio.NewReader(os.Stdin)
         input, _ := reader.ReadString('\n')
         temp := strings.Split(input, " ")
-        if len(temp) != 2 {
+        if len(temp) < 2 {
             panic("Invalid number of inputs. <resourceuri> <enumerationcontext> expected.")
         }
         resourceURI = temp[0]

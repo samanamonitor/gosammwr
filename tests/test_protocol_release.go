@@ -36,8 +36,7 @@ func main() {
         uuid = os.Args[2]
     }
 
-    prot := protocol.Protocol{}
-    err := prot.Init(endpoint, username, password, keytab_file)
+    prot, err := protocol.NewProtocol(endpoint, username, password, keytab_file)
     if err != nil {
         panic(err)
     }

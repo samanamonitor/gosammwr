@@ -21,15 +21,14 @@ func main() {
     keytab_file := os.Getenv("WR_KEYTAB")
     resourceURI := "http://schemas.microsoft.com/wbem/wsman/1/windows/shell/cmd"
 
-    prot := protocol.Protocol{}
-    err := prot.Init(endpoint, username, password, keytab_file)
+    prot, err := protocol.NewProtocol(endpoint, username, password, keytab_file)
     if err != nil {
         panic(err)
     }
     defer prot.Close()
     fmt.Printf("Init Complete\n")
 
-    selectorset := map[string]string {
+    selectorset := protocol.SelectorSet {
         "ShellId": os.Args[1],
     }
 
@@ -40,7 +39,7 @@ func main() {
     Stream.CreateAttr("End", "false")
     Stream.CreateText(base64.StdEncoding.EncodeToString([]byte("exit\r\n")))
 
-    response, err := prot.Send(resourceURI, Send, &selectorset, nil)
+    response, err := prot.Send(resourceURI, Send, selectorset, nil)
     if err != nil {
         fmt.Println(response)
         panic(err)

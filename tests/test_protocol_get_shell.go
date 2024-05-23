@@ -18,8 +18,7 @@ func main() {
 
     var resourceURI string
 
-    prot := protocol.Protocol{}
-    err := prot.Init(endpoint, username, password, keytab_file)
+    prot, err := protocol.NewProtocol(endpoint, username, password, keytab_file)
     if err != nil {
         panic(err)
     }
@@ -28,11 +27,11 @@ func main() {
 
 
     resourceURI = "http://schemas.microsoft.com/wbem/wsman/1/windows/shell/cmd"
-    selectorset := map[string]string {
+    selectorset := protocol.SelectorSet {
         "ShellId": os.Args[1],
     }
 
-    response_doc, err := prot.Get(resourceURI, &selectorset, nil)
+    response_doc, err := prot.Get(resourceURI, selectorset, nil)
     if err != nil {
         fmt.Println(response_doc)
         panic(err)

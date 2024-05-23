@@ -23,8 +23,7 @@ func main() {
     password := os.Getenv("WR_PASSWORD")
     keytab_file := os.Getenv("WR_KEYTAB")
 
-    prot := protocol.Protocol{}
-    err := prot.Init(endpoint, username, password, keytab_file)
+    prot, err := protocol.NewProtocol(endpoint, username, password, keytab_file)
     if err != nil {
         panic(err)
     }
@@ -64,12 +63,11 @@ func main() {
     }
     */
 
-    optionset := map[string]protocol.Option{
-        "WINRS_NOPROFILE": { Value: "FALSE", Type: "xs:boolean" },
-        "WINRS_CODEPAGE": { Value: "437", Type: "xs:unsignedInt" },
-    }
+    optionset := protocol.OptionSet{}
+    optionset.Add("WINRS_NOPROFILE", "xs:boolean", "FALSE")
+    optionset.Add("WINRS_CODEPAGE", "xs:unsignedInt", "437")
 
-    response, err := prot.Create(resourceURI, shell, &optionset)
+    response, err := prot.Create(resourceURI, shell, optionset)
     if err != nil {
         fmt.Println(response)
         panic(err)

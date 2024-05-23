@@ -27,8 +27,7 @@ func main() {
     password := os.Getenv("WR_PASSWORD")
     keytab_file := os.Getenv("WR_KEYTAB")
 
-    prot := protocol.Protocol{}
-    err := prot.Init(endpoint, username, password, keytab_file)
+    prot, err := protocol.NewProtocol(endpoint, username, password, keytab_file)
     if err != nil {
         panic(err)
     }
@@ -61,7 +60,7 @@ func main() {
         CommandId = os.Args[3]
     }
 
-    selectorset := map[string]string{
+    selectorset := protocol.SelectorSet{
         "ShellId": ShellId,
     }
 
@@ -70,7 +69,7 @@ func main() {
     DesiredStream.CreateAttr("CommandId", CommandId)
     DesiredStream.CreateText("stdout stderr")
 
-    response, err := prot.Receive(resourceURI, Receive, &selectorset, nil)
+    response, err := prot.Receive(resourceURI, Receive, selectorset, nil)
     if err != nil {
         fmt.Println(response)
         panic(err)

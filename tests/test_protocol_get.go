@@ -28,28 +28,25 @@ func main() {
     }
 
     var resourceURI string
-    var selectorset *map[string]string
 
     resourceURI = os.Args[1]
     cmd_selectors := os.Args[2:]
-    t_selectorset := map[string]string{}
+    ss := protocol.SelectorSet{}
     for i := 0; i < len(cmd_selectors); i += 1 {
         temp := strings.Split(cmd_selectors[i], "=")
         if len(temp) != 2 {
             panic("Invalid parameters. Selectors must be of type key=value")
         }
-        t_selectorset[temp[0]] = temp[1]
+        ss[temp[0]] = temp[1]
     }
-    selectorset = &t_selectorset
 
-    prot := protocol.Protocol{}
-    err := prot.Init(endpoint, username, password, keytab_file)
+    prot, err := protocol.NewProtocol(endpoint, username, password, keytab_file)
     if err != nil {
         panic(err)
     }
     defer prot.Close()
 
-    response_doc, err := prot.Get(resourceURI, selectorset, nil)
+    response_doc, err := prot.Get(resourceURI, ss, nil)
     if err != nil {
         fmt.Println(response_doc)
         panic(err)
