@@ -16,8 +16,7 @@ func main() {
     password := os.Getenv("WR_PASSWORD")
     keytab_file := os.Getenv("WR_KEYTAB")
 
-    shell := shell.Shell{}
-    err := shell.Init(endpoint, username, password, keytab_file)
+    shell, err := shell.NewShell(endpoint, username, password, keytab_file)
     if err != nil {
         panic(err)
     }

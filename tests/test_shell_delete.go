@@ -15,12 +15,11 @@ func main() {
         panic("Must pass ShellId as parameter")
     }
 
-    shell := shell.Shell{}
-    err := shell.Init(endpoint, username, password, keytab_file)
-    defer shell.Cleanup()
+    shell, err := shell.NewShell(endpoint, username, password, keytab_file)
     if err != nil {
         panic(err)
     }
+    defer shell.Cleanup()
 
     err = shell.Delete(os.Args[1])
     if err != nil {

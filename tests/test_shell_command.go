@@ -19,8 +19,7 @@ func main() {
 /*
     WINRS_SKIP_CMD_SHELL := len(os.Getenv("WINRS_SKIP_CMD_SHELL")) > 0
 */
-    shell := shell.Shell{}
-    err := shell.Init(endpoint, username, password, keytab_file)
+    shell, err := shell.NewShell(endpoint, username, password, keytab_file)
     if err != nil {
         panic(err)
     }

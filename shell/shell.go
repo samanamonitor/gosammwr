@@ -29,14 +29,16 @@ type ShellInstance struct {
 	ShellInactivity string
 }
 
-func (s *Shell) Init(endpoint string,
+func NewShell(endpoint string,
 		username string,
 		password string,
-		keytab_file string) (error) {
+		keytab_file string) (*Shell, error) {
+
 	var err error
+	s := Shell{}
     s.prot, err = protocol.NewProtocol(endpoint, username, password, keytab_file)
 
-	return err
+	return &s, err
 }
 
 func (s *Shell) Cleanup() {
