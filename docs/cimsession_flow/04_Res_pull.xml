@@ -1,0 +1,218 @@
+<s:Envelope xml:lang="en-US" xmlns:s="http://www.w3.org/2003/05/soap-envelope" xmlns:a="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:n="http://schemas.xmlsoap.org/ws/2004/09/enumeration" xmlns:w="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd" xmlns:p="http://schemas.microsoft.com/wbem/wsman/1/wsman.xsd">
+    <s:Header>
+        <a:Action>http://schemas.xmlsoap.org/ws/2004/09/enumeration/PullResponse</a:Action>
+        <a:MessageID>uuid:D23A9839-A5DE-4AEA-BCE0-AE2208933CDB</a:MessageID>
+        <a:To>http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous</a:To>
+        <p:OperationID s:mustUnderstand="false">uuid:7EE99D77-9A8E-4C53-9349-A6DB7AE09AB5</p:OperationID>
+        <p:SequenceId>1</p:SequenceId>
+        <a:RelatesTo>uuid:A62E3123-EFF2-4F2C-BA9C-EA59B4D7EC0D</a:RelatesTo>
+    </s:Header>
+    <s:Body>
+        <n:PullResponse>
+            <n:Items>
+                <w:Item xmlns:w="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd">
+                    <p:Win32_DiskDrive xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/Win32_DiskDrive" xmlns:cim="http://schemas.dmtf.org/wbem/wscim/1/common" xsi:type="p:Win32_DiskDrive_Type">
+                        <p:Availability xsi:nil="true" />
+                        <p:BytesPerSector>512</p:BytesPerSector>
+                        <p:Capabilities>3</p:Capabilities>
+                        <p:Capabilities>4</p:Capabilities>
+                        <p:CapabilityDescriptions>Random Access</p:CapabilityDescriptions>
+                        <p:CapabilityDescriptions>Supports Writing</p:CapabilityDescriptions>
+                        <p:Caption>Red Hat VirtIO SCSI Disk Device</p:Caption>
+                        <p:CompressionMethod xsi:nil="true" />
+                        <p:ConfigManagerErrorCode>0</p:ConfigManagerErrorCode>
+                        <p:ConfigManagerUserConfig>false</p:ConfigManagerUserConfig>
+                        <p:CreationClassName>Win32_DiskDrive</p:CreationClassName>
+                        <p:DefaultBlockSize xsi:nil="true" />
+                        <p:Description>Disk drive</p:Description>
+                        <p:DeviceID>\\.\PHYSICALDRIVE2</p:DeviceID>
+                        <p:ErrorCleared xsi:nil="true" />
+                        <p:ErrorDescription xsi:nil="true" />
+                        <p:ErrorMethodology xsi:nil="true" />
+                        <p:FirmwareRevision>0001</p:FirmwareRevision>
+                        <p:Index>2</p:Index>
+                        <p:InstallDate xsi:nil="true" />
+                        <p:InterfaceType>SCSI</p:InterfaceType>
+                        <p:LastErrorCode xsi:nil="true" />
+                        <p:Manufacturer>(Standard disk drives)</p:Manufacturer>
+                        <p:MaxBlockSize xsi:nil="true" />
+                        <p:MaxMediaSize xsi:nil="true" />
+                        <p:MediaLoaded>true</p:MediaLoaded>
+                        <p:MediaType>Fixed hard disk media</p:MediaType>
+                        <p:MinBlockSize xsi:nil="true" />
+                        <p:Model>Red Hat VirtIO SCSI Disk Device</p:Model>
+                        <p:Name>\\.\PHYSICALDRIVE2</p:Name>
+                        <p:NeedsCleaning xsi:nil="true" />
+                        <p:NumberOfMediaSupported xsi:nil="true" />
+                        <p:Partitions>1</p:Partitions>
+                        <p:PNPDeviceID>SCSI\DISK&amp;VEN_RED_HAT&amp;PROD_VIRTIO\4&amp;25A7233F&amp;0&amp;000000</p:PNPDeviceID>
+                        <p:PowerManagementCapabilities xmlns:m="http://schemas.microsoft.com/wbem/wsman/1/wsman.xsd" xsi:nil="true" m:IsNullArray="true" />
+                        <p:PowerManagementSupported xsi:nil="true" />
+                        <p:SCSIBus>0</p:SCSIBus>
+                        <p:SCSILogicalUnit>0</p:SCSILogicalUnit>
+                        <p:SCSIPort>4</p:SCSIPort>
+                        <p:SCSITargetId>0</p:SCSITargetId>
+                        <p:SectorsPerTrack>63</p:SectorsPerTrack>
+                        <p:SerialNumber>24aca085-bcdc-4c18-b</p:SerialNumber>
+                        <p:Signature>2660052163</p:Signature>
+                        <p:Size>322118415360</p:Size>
+                        <p:Status>OK</p:Status>
+                        <p:StatusInfo xsi:nil="true" />
+                        <p:SystemCreationClassName>Win32_ComputerSystem</p:SystemCreationClassName>
+                        <p:SystemName>SMNNOVMSFS01</p:SystemName>
+                        <p:TotalCylinders>39162</p:TotalCylinders>
+                        <p:TotalHeads>255</p:TotalHeads>
+                        <p:TotalSectors>629137530</p:TotalSectors>
+                        <p:TotalTracks>9986310</p:TotalTracks>
+                        <p:TracksPerCylinder>255</p:TracksPerCylinder>
+                    </p:Win32_DiskDrive>
+                    <a:EndpointReference xmlns:a="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:w="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd">
+                        <a:Address>http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous</a:Address>
+                        <a:ReferenceParameters>
+                            <w:ResourceURI>http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/Win32_DiskDrive</w:ResourceURI>
+                            <w:SelectorSet>
+                                <w:Selector Name="DeviceID">\\.\PHYSICALDRIVE2</w:Selector>
+                                <w:Selector Name="__cimnamespace">root/cimv2</w:Selector>
+                            </w:SelectorSet>
+                        </a:ReferenceParameters>
+                    </a:EndpointReference>
+                </w:Item>
+                <w:Item xmlns:w="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd">
+                    <p:Win32_DiskDrive xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/Win32_DiskDrive" xmlns:cim="http://schemas.dmtf.org/wbem/wscim/1/common" xsi:type="p:Win32_DiskDrive_Type">
+                        <p:Availability xsi:nil="true" />
+                        <p:BytesPerSector>512</p:BytesPerSector>
+                        <p:Capabilities>3</p:Capabilities>
+                        <p:Capabilities>4</p:Capabilities>
+                        <p:CapabilityDescriptions>Random Access</p:CapabilityDescriptions>
+                        <p:CapabilityDescriptions>Supports Writing</p:CapabilityDescriptions>
+                        <p:Caption>Red Hat VirtIO SCSI Disk Device</p:Caption>
+                        <p:CompressionMethod xsi:nil="true" />
+                        <p:ConfigManagerErrorCode>0</p:ConfigManagerErrorCode>
+                        <p:ConfigManagerUserConfig>false</p:ConfigManagerUserConfig>
+                        <p:CreationClassName>Win32_DiskDrive</p:CreationClassName>
+                        <p:DefaultBlockSize xsi:nil="true" />
+                        <p:Description>Disk drive</p:Description>
+                        <p:DeviceID>\\.\PHYSICALDRIVE3</p:DeviceID>
+                        <p:ErrorCleared xsi:nil="true" />
+                        <p:ErrorDescription xsi:nil="true" />
+                        <p:ErrorMethodology xsi:nil="true" />
+                        <p:FirmwareRevision>0001</p:FirmwareRevision>
+                        <p:Index>3</p:Index>
+                        <p:InstallDate xsi:nil="true" />
+                        <p:InterfaceType>SCSI</p:InterfaceType>
+                        <p:LastErrorCode xsi:nil="true" />
+                        <p:Manufacturer>(Standard disk drives)</p:Manufacturer>
+                        <p:MaxBlockSize xsi:nil="true" />
+                        <p:MaxMediaSize xsi:nil="true" />
+                        <p:MediaLoaded>true</p:MediaLoaded>
+                        <p:MediaType>Fixed hard disk media</p:MediaType>
+                        <p:MinBlockSize xsi:nil="true" />
+                        <p:Model>Red Hat VirtIO SCSI Disk Device</p:Model>
+                        <p:Name>\\.\PHYSICALDRIVE3</p:Name>
+                        <p:NeedsCleaning xsi:nil="true" />
+                        <p:NumberOfMediaSupported xsi:nil="true" />
+                        <p:Partitions>1</p:Partitions>
+                        <p:PNPDeviceID>SCSI\DISK&amp;VEN_RED_HAT&amp;PROD_VIRTIO\4&amp;348B97E2&amp;0&amp;000000</p:PNPDeviceID>
+                        <p:PowerManagementCapabilities xmlns:m="http://schemas.microsoft.com/wbem/wsman/1/wsman.xsd" xsi:nil="true" m:IsNullArray="true" />
+                        <p:PowerManagementSupported xsi:nil="true" />
+                        <p:SCSIBus>0</p:SCSIBus>
+                        <p:SCSILogicalUnit>0</p:SCSILogicalUnit>
+                        <p:SCSIPort>5</p:SCSIPort>
+                        <p:SCSITargetId>0</p:SCSITargetId>
+                        <p:SectorsPerTrack>63</p:SectorsPerTrack>
+                        <p:SerialNumber>71009db7-4739-4bc8-b</p:SerialNumber>
+                        <p:Signature>2034328286</p:Signature>
+                        <p:Size>214745610240</p:Size>
+                        <p:Status>OK</p:Status>
+                        <p:StatusInfo xsi:nil="true" />
+                        <p:SystemCreationClassName>Win32_ComputerSystem</p:SystemCreationClassName>
+                        <p:SystemName>SMNNOVMSFS01</p:SystemName>
+                        <p:TotalCylinders>26108</p:TotalCylinders>
+                        <p:TotalHeads>255</p:TotalHeads>
+                        <p:TotalSectors>419425020</p:TotalSectors>
+                        <p:TotalTracks>6657540</p:TotalTracks>
+                        <p:TracksPerCylinder>255</p:TracksPerCylinder>
+                    </p:Win32_DiskDrive>
+                    <a:EndpointReference xmlns:a="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:w="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd">
+                        <a:Address>http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous</a:Address>
+                        <a:ReferenceParameters>
+                            <w:ResourceURI>http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/Win32_DiskDrive</w:ResourceURI>
+                            <w:SelectorSet>
+                                <w:Selector Name="DeviceID">\\.\PHYSICALDRIVE3</w:Selector>
+                                <w:Selector Name="__cimnamespace">root/cimv2</w:Selector>
+                            </w:SelectorSet>
+                        </a:ReferenceParameters>
+                    </a:EndpointReference>
+                </w:Item>
+                <w:Item xmlns:w="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd">
+                    <p:Win32_DiskDrive xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/Win32_DiskDrive" xmlns:cim="http://schemas.dmtf.org/wbem/wscim/1/common" xsi:type="p:Win32_DiskDrive_Type">
+                        <p:Availability xsi:nil="true" />
+                        <p:BytesPerSector>512</p:BytesPerSector>
+                        <p:Capabilities>3</p:Capabilities>
+                        <p:Capabilities>4</p:Capabilities>
+                        <p:CapabilityDescriptions>Random Access</p:CapabilityDescriptions>
+                        <p:CapabilityDescriptions>Supports Writing</p:CapabilityDescriptions>
+                        <p:Caption>Red Hat VirtIO SCSI Disk Device</p:Caption>
+                        <p:CompressionMethod xsi:nil="true" />
+                        <p:ConfigManagerErrorCode>0</p:ConfigManagerErrorCode>
+                        <p:ConfigManagerUserConfig>false</p:ConfigManagerUserConfig>
+                        <p:CreationClassName>Win32_DiskDrive</p:CreationClassName>
+                        <p:DefaultBlockSize xsi:nil="true" />
+                        <p:Description>Disk drive</p:Description>
+                        <p:DeviceID>\\.\PHYSICALDRIVE1</p:DeviceID>
+                        <p:ErrorCleared xsi:nil="true" />
+                        <p:ErrorDescription xsi:nil="true" />
+                        <p:ErrorMethodology xsi:nil="true" />
+                        <p:FirmwareRevision>0001</p:FirmwareRevision>
+                        <p:Index>1</p:Index>
+                        <p:InstallDate xsi:nil="true" />
+                        <p:InterfaceType>SCSI</p:InterfaceType>
+                        <p:LastErrorCode xsi:nil="true" />
+                        <p:Manufacturer>(Standard disk drives)</p:Manufacturer>
+                        <p:MaxBlockSize xsi:nil="true" />
+                        <p:MaxMediaSize xsi:nil="true" />
+                        <p:MediaLoaded>true</p:MediaLoaded>
+                        <p:MediaType>Fixed hard disk media</p:MediaType>
+                        <p:MinBlockSize xsi:nil="true" />
+                        <p:Model>Red Hat VirtIO SCSI Disk Device</p:Model>
+                        <p:Name>\\.\PHYSICALDRIVE1</p:Name>
+                        <p:NeedsCleaning xsi:nil="true" />
+                        <p:NumberOfMediaSupported xsi:nil="true" />
+                        <p:Partitions>1</p:Partitions>
+                        <p:PNPDeviceID>SCSI\DISK&amp;VEN_RED_HAT&amp;PROD_VIRTIO\4&amp;352177D0&amp;0&amp;000000</p:PNPDeviceID>
+                        <p:PowerManagementCapabilities xmlns:m="http://schemas.microsoft.com/wbem/wsman/1/wsman.xsd" xsi:nil="true" m:IsNullArray="true" />
+                        <p:PowerManagementSupported xsi:nil="true" />
+                        <p:SCSIBus>0</p:SCSIBus>
+                        <p:SCSILogicalUnit>0</p:SCSILogicalUnit>
+                        <p:SCSIPort>3</p:SCSIPort>
+                        <p:SCSITargetId>0</p:SCSITargetId>
+                        <p:SectorsPerTrack>63</p:SectorsPerTrack>
+                        <p:SerialNumber>54bc3ec9-0f7c-43b4-9</p:SerialNumber>
+                        <p:Signature>1994481836</p:Signature>
+                        <p:Size>107372805120</p:Size>
+                        <p:Status>OK</p:Status>
+                        <p:StatusInfo xsi:nil="true" />
+                        <p:SystemCreationClassName>Win32_ComputerSystem</p:SystemCreationClassName>
+                        <p:SystemName>SMNNOVMSFS01</p:SystemName>
+                        <p:TotalCylinders>13054</p:TotalCylinders>
+                        <p:TotalHeads>255</p:TotalHeads>
+                        <p:TotalSectors>209712510</p:TotalSectors>
+                        <p:TotalTracks>3328770</p:TotalTracks>
+                        <p:TracksPerCylinder>255</p:TracksPerCylinder>
+                    </p:Win32_DiskDrive>
+                    <a:EndpointReference xmlns:a="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:w="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd">
+                        <a:Address>http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous</a:Address>
+                        <a:ReferenceParameters>
+                            <w:ResourceURI>http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/Win32_DiskDrive</w:ResourceURI>
+                            <w:SelectorSet>
+                                <w:Selector Name="DeviceID">\\.\PHYSICALDRIVE1</w:Selector>
+                                <w:Selector Name="__cimnamespace">root/cimv2</w:Selector>
+                            </w:SelectorSet>
+                        </a:ReferenceParameters>
+                    </a:EndpointReference>
+                </w:Item>
+            </n:Items>
+            <n:EndOfSequence />
+        </n:PullResponse>
+    </s:Body>
+</s:Envelope>

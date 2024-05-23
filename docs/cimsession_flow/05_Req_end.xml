@@ -1,0 +1,10 @@
+<s:Envelope xmlns:s="http://www.w3.org/2003/05/soap-envelope" xmlns:a="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:w="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd" xmlns:p="http://schemas.microsoft.com/wbem/wsman/1/wsman.xsd">
+    <s:Header>
+        <a:To>http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous</a:To>
+        <w:ResourceURI s:mustUnderstand="true">http://schemas.microsoft.com/wbem/wsman/1/wsman/FullDuplex</w:ResourceURI>
+        <a:Action s:mustUnderstand="true">http://schemas.microsoft.com/wbem/wsman/1/wsman/End</a:Action>
+        <a:MessageID>uuid:07E5A2E9-775F-4664-B9C4-E073CAC8B343</a:MessageID>
+        <p:OperationID>uuid:7189BABA-2AFB-48DC-87F4-62BE0F5178A1</p:OperationID>
+    </s:Header>
+    <s:Body></s:Body>
+</s:Envelope>

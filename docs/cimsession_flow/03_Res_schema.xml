@@ -1,0 +1,595 @@
+<s:Envelope xml:lang="en-US" xmlns:s="http://www.w3.org/2003/05/soap-envelope" xmlns:a="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:x="http://schemas.xmlsoap.org/ws/2004/09/transfer" xmlns:w="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd" xmlns:p="http://schemas.microsoft.com/wbem/wsman/1/wsman.xsd">
+    <s:Header>
+        <a:Action>http://schemas.xmlsoap.org/ws/2004/09/transfer/GetResponse</a:Action>
+        <a:MessageID>uuid:48F5D5FC-302C-499E-8147-8C56B9898875</a:MessageID>
+        <p:OperationID s:mustUnderstand="false">uuid:7189BABA-2AFB-48DC-87F4-62BE0F5178A1</p:OperationID>
+        <p:SequenceId>1</p:SequenceId>
+        <a:To>http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous</a:To>
+        <a:RelatesTo>uuid:ACCCEC55-70F2-46A5-88FC-4DE1BD3E4ED6</a:RelatesTo>
+    </s:Header>
+    <s:Body>
+        <CLASS NAME="Win32_DiskDrive" SUPERCLASS="CIM_DiskDrive" DERIVATION="CIM_DiskDrive,CIM_MediaAccessDevice,CIM_LogicalDevice,CIM_LogicalElement,CIM_ManagedSystemElement">
+            <QUALIFIER NAME="dynamic" TYPE="boolean" TOSUBCLASS="false" TOINSTANCE="true">
+                <VALUE>TRUE</VALUE>
+            </QUALIFIER>
+            <QUALIFIER NAME="Locale" TYPE="sint32" TOSUBCLASS="false" TOINSTANCE="true">
+                <VALUE>1033</VALUE>
+            </QUALIFIER>
+            <QUALIFIER NAME="provider" TYPE="string" TOSUBCLASS="false" TOINSTANCE="true">
+                <VALUE>CIMWin32</VALUE>
+            </QUALIFIER>
+            <QUALIFIER NAME="UUID" TYPE="string" TOSUBCLASS="false" TOINSTANCE="true">
+                <VALUE>{8502C4B2-5FBB-11D2-AAC1-006008C78BC7}</VALUE>
+            </QUALIFIER>
+            <PROPERTY NAME="Availability" CLASSORIGIN="CIM_LogicalDevice" PROPAGATED="true" TYPE="uint16">
+                <QUALIFIER NAME="MappingStrings" PROPAGATED="true" TYPE="string">
+                    <VALUE.ARRAY>
+                        <VALUE>MIF.DMTF|Operational State|003.5</VALUE>
+                        <VALUE>MIB.IETF|HOST-RESOURCES-MIB.hrDeviceStatus</VALUE>
+                    </VALUE.ARRAY>
+                </QUALIFIER>
+                <QUALIFIER NAME="read" PROPAGATED="true" TYPE="boolean">
+                    <VALUE>TRUE</VALUE>
+                </QUALIFIER>
+                <QUALIFIER NAME="ValueMap" PROPAGATED="true" TYPE="string">
+                    <VALUE.ARRAY>
+                        <VALUE>1</VALUE>
+                        <VALUE>2</VALUE>
+                        <VALUE>3</VALUE>
+                        <VALUE>4</VALUE>
+                        <VALUE>5</VALUE>
+                        <VALUE>6</VALUE>
+                        <VALUE>7</VALUE>
+                        <VALUE>8</VALUE>
+                        <VALUE>9</VALUE>
+                        <VALUE>10</VALUE>
+                        <VALUE>11</VALUE>
+                        <VALUE>12</VALUE>
+                        <VALUE>13</VALUE>
+                        <VALUE>14</VALUE>
+                        <VALUE>15</VALUE>
+                        <VALUE>16</VALUE>
+                        <VALUE>17</VALUE>
+                        <VALUE>18</VALUE>
+                        <VALUE>19</VALUE>
+                        <VALUE>20</VALUE>
+                        <VALUE>21</VALUE>
+                    </VALUE.ARRAY>
+                </QUALIFIER>
+            </PROPERTY>
+            <PROPERTY NAME="BytesPerSector" CLASSORIGIN="Win32_DiskDrive" TYPE="uint32">
+                <QUALIFIER NAME="MappingStrings" TYPE="string">
+                    <VALUE.ARRAY>
+                        <VALUE>Win32API|Device Input and Output Structures|DISK_GEOMETRY|BytesPerSector</VALUE>
+                    </VALUE.ARRAY>
+                </QUALIFIER>
+                <QUALIFIER NAME="read" TYPE="boolean">
+                    <VALUE>TRUE</VALUE>
+                </QUALIFIER>
+            </PROPERTY>
+            <PROPERTY.ARRAY NAME="Capabilities" CLASSORIGIN="CIM_MediaAccessDevice" PROPAGATED="true" TYPE="uint16">
+                <QUALIFIER NAME="ArrayType" PROPAGATED="true" TYPE="string">
+                    <VALUE>Indexed</VALUE>
+                </QUALIFIER>
+                <QUALIFIER NAME="MappingStrings" PROPAGATED="true" TYPE="string">
+                    <VALUE.ARRAY>
+                        <VALUE>MIF.DMTF|Storage Devices|001.9</VALUE>
+                        <VALUE>MIF.DMTF|Storage Devices|001.11</VALUE>
+                        <VALUE>MIF.DMTF|Storage Devices|001.12</VALUE>
+                        <VALUE>MIF.DMTF|Disks|003.7</VALUE>
+                    </VALUE.ARRAY>
+                </QUALIFIER>
+                <QUALIFIER NAME="ModelCorrespondence" PROPAGATED="true" TYPE="string">
+                    <VALUE.ARRAY>
+                        <VALUE>CIM_MediaAccessDevice.CapabilityDescriptions</VALUE>
+                    </VALUE.ARRAY>
+                </QUALIFIER>
+                <QUALIFIER NAME="read" PROPAGATED="true" TYPE="boolean">
+                    <VALUE>TRUE</VALUE>
+                </QUALIFIER>
+            </PROPERTY.ARRAY>
+            <PROPERTY.ARRAY NAME="CapabilityDescriptions" CLASSORIGIN="CIM_MediaAccessDevice" PROPAGATED="true" TYPE="string">
+                <QUALIFIER NAME="ArrayType" PROPAGATED="true" TYPE="string">
+                    <VALUE>Indexed</VALUE>
+                </QUALIFIER>
+                <QUALIFIER NAME="ModelCorrespondence" PROPAGATED="true" TYPE="string">
+                    <VALUE.ARRAY>
+                        <VALUE>CIM_MediaAccessDevice.Capabilities</VALUE>
+                    </VALUE.ARRAY>
+                </QUALIFIER>
+                <QUALIFIER NAME="read" PROPAGATED="true" TYPE="boolean">
+                    <VALUE>TRUE</VALUE>
+                </QUALIFIER>
+            </PROPERTY.ARRAY>
+            <PROPERTY NAME="Caption" CLASSORIGIN="CIM_ManagedSystemElement" PROPAGATED="true" TYPE="string">
+                <QUALIFIER NAME="MaxLen" PROPAGATED="true" TYPE="sint32">
+                    <VALUE>64</VALUE>
+                </QUALIFIER>
+                <QUALIFIER NAME="read" PROPAGATED="true" TYPE="boolean">
+                    <VALUE>TRUE</VALUE>
+                </QUALIFIER>
+            </PROPERTY>
+            <PROPERTY NAME="CompressionMethod" CLASSORIGIN="CIM_MediaAccessDevice" PROPAGATED="true" TYPE="string">
+                <QUALIFIER NAME="read" PROPAGATED="true" TYPE="boolean">
+                    <VALUE>TRUE</VALUE>
+                </QUALIFIER>
+            </PROPERTY>
+            <PROPERTY NAME="ConfigManagerErrorCode" CLASSORIGIN="CIM_LogicalDevice" PROPAGATED="true" TYPE="uint32">
+                <QUALIFIER NAME="read" PROPAGATED="true" TYPE="boolean">
+                    <VALUE>TRUE</VALUE>
+                </QUALIFIER>
+                <QUALIFIER NAME="ValueMap" PROPAGATED="true" TYPE="string">
+                    <VALUE.ARRAY>
+                        <VALUE>0</VALUE>
+                        <VALUE>1</VALUE>
+                        <VALUE>2</VALUE>
+                        <VALUE>3</VALUE>
+                        <VALUE>4</VALUE>
+                        <VALUE>5</VALUE>
+                        <VALUE>6</VALUE>
+                        <VALUE>7</VALUE>
+                        <VALUE>8</VALUE>
+                        <VALUE>9</VALUE>
+                        <VALUE>10</VALUE>
+                        <VALUE>11</VALUE>
+                        <VALUE>12</VALUE>
+                        <VALUE>13</VALUE>
+                        <VALUE>14</VALUE>
+                        <VALUE>15</VALUE>
+                        <VALUE>16</VALUE>
+                        <VALUE>17</VALUE>
+                        <VALUE>18</VALUE>
+                        <VALUE>19</VALUE>
+                        <VALUE>20</VALUE>
+                        <VALUE>21</VALUE>
+                        <VALUE>22</VALUE>
+                        <VALUE>23</VALUE>
+                        <VALUE>24</VALUE>
+                        <VALUE>25</VALUE>
+                        <VALUE>26</VALUE>
+                        <VALUE>27</VALUE>
+                        <VALUE>28</VALUE>
+                        <VALUE>29</VALUE>
+                        <VALUE>30</VALUE>
+                        <VALUE>31</VALUE>
+                    </VALUE.ARRAY>
+                </QUALIFIER>
+            </PROPERTY>
+            <PROPERTY NAME="ConfigManagerUserConfig" CLASSORIGIN="CIM_LogicalDevice" PROPAGATED="true" TYPE="boolean">
+                <QUALIFIER NAME="read" PROPAGATED="true" TYPE="boolean">
+                    <VALUE>TRUE</VALUE>
+                </QUALIFIER>
+            </PROPERTY>
+            <PROPERTY NAME="CreationClassName" CLASSORIGIN="CIM_LogicalDevice" PROPAGATED="true" TYPE="string">
+                <QUALIFIER NAME="CIM_Key" PROPAGATED="true" TYPE="boolean">
+                    <VALUE>TRUE</VALUE>
+                </QUALIFIER>
+                <QUALIFIER NAME="read" PROPAGATED="true" TYPE="boolean">
+                    <VALUE>TRUE</VALUE>
+                </QUALIFIER>
+            </PROPERTY>
+            <PROPERTY NAME="DefaultBlockSize" CLASSORIGIN="CIM_MediaAccessDevice" PROPAGATED="true" TYPE="uint64">
+                <QUALIFIER NAME="read" PROPAGATED="true" TYPE="boolean">
+                    <VALUE>TRUE</VALUE>
+                </QUALIFIER>
+            </PROPERTY>
+            <PROPERTY NAME="Description" CLASSORIGIN="CIM_ManagedSystemElement" PROPAGATED="true" TYPE="string">
+                <QUALIFIER NAME="read" PROPAGATED="true" TYPE="boolean">
+                    <VALUE>TRUE</VALUE>
+                </QUALIFIER>
+            </PROPERTY>
+            <PROPERTY NAME="DeviceID" CLASSORIGIN="CIM_LogicalDevice" PROPAGATED="true" TYPE="string">
+                <QUALIFIER NAME="CIM_Key" PROPAGATED="true" TYPE="boolean">
+                    <VALUE>TRUE</VALUE>
+                </QUALIFIER>
+                <QUALIFIER NAME="key" TYPE="boolean" OVERRIDABLE="false" TOINSTANCE="true">
+                    <VALUE>TRUE</VALUE>
+                </QUALIFIER>
+                <QUALIFIER NAME="MappingStrings" TYPE="string">
+                    <VALUE.ARRAY>
+                        <VALUE>WMI</VALUE>
+                    </VALUE.ARRAY>
+                </QUALIFIER>
+                <QUALIFIER NAME="Override" TYPE="string">
+                    <VALUE>DeviceId</VALUE>
+                </QUALIFIER>
+                <QUALIFIER NAME="read" TYPE="boolean">
+                    <VALUE>TRUE</VALUE>
+                </QUALIFIER>
+            </PROPERTY>
+            <PROPERTY NAME="ErrorCleared" CLASSORIGIN="CIM_LogicalDevice" PROPAGATED="true" TYPE="boolean">
+                <QUALIFIER NAME="read" PROPAGATED="true" TYPE="boolean">
+                    <VALUE>TRUE</VALUE>
+                </QUALIFIER>
+            </PROPERTY>
+            <PROPERTY NAME="ErrorDescription" CLASSORIGIN="CIM_LogicalDevice" PROPAGATED="true" TYPE="string">
+                <QUALIFIER NAME="read" PROPAGATED="true" TYPE="boolean">
+                    <VALUE>TRUE</VALUE>
+                </QUALIFIER>
+            </PROPERTY>
+            <PROPERTY NAME="ErrorMethodology" CLASSORIGIN="CIM_MediaAccessDevice" PROPAGATED="true" TYPE="string">
+                <QUALIFIER NAME="read" PROPAGATED="true" TYPE="boolean">
+                    <VALUE>TRUE</VALUE>
+                </QUALIFIER>
+            </PROPERTY>
+            <PROPERTY NAME="FirmwareRevision" CLASSORIGIN="Win32_DiskDrive" TYPE="string">
+                <QUALIFIER NAME="MappingStrings" TYPE="string">
+                    <VALUE.ARRAY>
+                        <VALUE>Win32API|Device Input and Output Structures|STORAGE_DEVICE_DESCRIPTOR|ProductRevisionOffset</VALUE>
+                    </VALUE.ARRAY>
+                </QUALIFIER>
+                <QUALIFIER NAME="read" TYPE="boolean">
+                    <VALUE>TRUE</VALUE>
+                </QUALIFIER>
+            </PROPERTY>
+            <PROPERTY NAME="Index" CLASSORIGIN="Win32_DiskDrive" TYPE="uint32">
+                <QUALIFIER NAME="MappingStrings" TYPE="string">
+                    <VALUE.ARRAY>
+                        <VALUE>Win32API|Windows 95/98 Functions|DRIVE_MAP_INFObtInt13Unit</VALUE>
+                    </VALUE.ARRAY>
+                </QUALIFIER>
+                <QUALIFIER NAME="read" TYPE="boolean">
+                    <VALUE>TRUE</VALUE>
+                </QUALIFIER>
+            </PROPERTY>
+            <PROPERTY NAME="InstallDate" CLASSORIGIN="CIM_ManagedSystemElement" PROPAGATED="true" TYPE="datetime">
+                <QUALIFIER NAME="MappingStrings" PROPAGATED="true" TYPE="string">
+                    <VALUE.ARRAY>
+                        <VALUE>MIF.DMTF|ComponentID|001.5</VALUE>
+                    </VALUE.ARRAY>
+                </QUALIFIER>
+                <QUALIFIER NAME="read" PROPAGATED="true" TYPE="boolean">
+                    <VALUE>TRUE</VALUE>
+                </QUALIFIER>
+            </PROPERTY>
+            <PROPERTY NAME="InterfaceType" CLASSORIGIN="Win32_DiskDrive" TYPE="string">
+                <QUALIFIER NAME="MappingStrings" TYPE="string">
+                    <VALUE.ARRAY>
+                        <VALUE>Win32API|Device Input and Output Functions|DeviceIoControl</VALUE>
+                    </VALUE.ARRAY>
+                </QUALIFIER>
+                <QUALIFIER NAME="read" TYPE="boolean">
+                    <VALUE>TRUE</VALUE>
+                </QUALIFIER>
+            </PROPERTY>
+            <PROPERTY NAME="LastErrorCode" CLASSORIGIN="CIM_LogicalDevice" PROPAGATED="true" TYPE="uint32">
+                <QUALIFIER NAME="read" PROPAGATED="true" TYPE="boolean">
+                    <VALUE>TRUE</VALUE>
+                </QUALIFIER>
+            </PROPERTY>
+            <PROPERTY NAME="Manufacturer" CLASSORIGIN="Win32_DiskDrive" TYPE="string">
+                <QUALIFIER NAME="MappingStrings" TYPE="string">
+                    <VALUE.ARRAY>
+                        <VALUE>Win32Registry|HKEY_LOCAL_MACHINE\HARDWARE\DEVICEMAP\Scsi\Scsi Port\Scsi Bus\Target Id\Logical Unit Id\Identifier</VALUE>
+                        <VALUE>Win32Registry|Manufacturer</VALUE>
+                    </VALUE.ARRAY>
+                </QUALIFIER>
+                <QUALIFIER NAME="read" TYPE="boolean">
+                    <VALUE>TRUE</VALUE>
+                </QUALIFIER>
+            </PROPERTY>
+            <PROPERTY NAME="MaxBlockSize" CLASSORIGIN="CIM_MediaAccessDevice" PROPAGATED="true" TYPE="uint64">
+                <QUALIFIER NAME="read" PROPAGATED="true" TYPE="boolean">
+                    <VALUE>TRUE</VALUE>
+                </QUALIFIER>
+            </PROPERTY>
+            <PROPERTY NAME="MaxMediaSize" CLASSORIGIN="CIM_MediaAccessDevice" PROPAGATED="true" TYPE="uint64">
+                <QUALIFIER NAME="MappingStrings" PROPAGATED="true" TYPE="string">
+                    <VALUE.ARRAY>
+                        <VALUE>MIF.DMTF|Sequential Access Devices|001.2</VALUE>
+                    </VALUE.ARRAY>
+                </QUALIFIER>
+                <QUALIFIER NAME="read" PROPAGATED="true" TYPE="boolean">
+                    <VALUE>TRUE</VALUE>
+                </QUALIFIER>
+            </PROPERTY>
+            <PROPERTY NAME="MediaLoaded" CLASSORIGIN="Win32_DiskDrive" TYPE="boolean">
+                <QUALIFIER NAME="MappingStrings" TYPE="string">
+                    <VALUE.ARRAY>
+                        <VALUE>Win32API|Device Input and Output Structures|DISK_GEOMETRY|MediaType|FixedMedia</VALUE>
+                    </VALUE.ARRAY>
+                </QUALIFIER>
+                <QUALIFIER NAME="read" TYPE="boolean">
+                    <VALUE>TRUE</VALUE>
+                </QUALIFIER>
+            </PROPERTY>
+            <PROPERTY NAME="MediaType" CLASSORIGIN="Win32_DiskDrive" TYPE="string">
+                <QUALIFIER NAME="MappingStrings" TYPE="string">
+                    <VALUE.ARRAY>
+                        <VALUE>Win32API|Device Input and Output Structures|DISK_GEOMETRY|MediaType</VALUE>
+                    </VALUE.ARRAY>
+                </QUALIFIER>
+                <QUALIFIER NAME="read" TYPE="boolean">
+                    <VALUE>TRUE</VALUE>
+                </QUALIFIER>
+                <QUALIFIER NAME="ValueMap" TYPE="string">
+                    <VALUE.ARRAY>
+                        <VALUE>Removable media other than floppy</VALUE>
+                        <VALUE>Fixed hard disk media</VALUE>
+                        <VALUE>Format is unknown</VALUE>
+                    </VALUE.ARRAY>
+                </QUALIFIER>
+            </PROPERTY>
+            <PROPERTY NAME="MinBlockSize" CLASSORIGIN="CIM_MediaAccessDevice" PROPAGATED="true" TYPE="uint64">
+                <QUALIFIER NAME="read" PROPAGATED="true" TYPE="boolean">
+                    <VALUE>TRUE</VALUE>
+                </QUALIFIER>
+            </PROPERTY>
+            <PROPERTY NAME="Model" CLASSORIGIN="Win32_DiskDrive" TYPE="string">
+                <QUALIFIER NAME="MappingStrings" TYPE="string">
+                    <VALUE.ARRAY>
+                        <VALUE>Win32Registry|HKEY_LOCAL_MACHINE\HARDWARE\DEVICEMAP\Scsi\Scsi Port\Scsi Bus\Target Id\Logical Unit Id\Identifier</VALUE>
+                        <VALUE>Win32Registry|ProductId</VALUE>
+                    </VALUE.ARRAY>
+                </QUALIFIER>
+                <QUALIFIER NAME="read" TYPE="boolean">
+                    <VALUE>TRUE</VALUE>
+                </QUALIFIER>
+            </PROPERTY>
+            <PROPERTY NAME="Name" CLASSORIGIN="CIM_ManagedSystemElement" PROPAGATED="true" TYPE="string">
+                <QUALIFIER NAME="read" PROPAGATED="true" TYPE="boolean">
+                    <VALUE>TRUE</VALUE>
+                </QUALIFIER>
+            </PROPERTY>
+            <PROPERTY NAME="NeedsCleaning" CLASSORIGIN="CIM_MediaAccessDevice" PROPAGATED="true" TYPE="boolean">
+                <QUALIFIER NAME="read" PROPAGATED="true" TYPE="boolean">
+                    <VALUE>TRUE</VALUE>
+                </QUALIFIER>
+            </PROPERTY>
+            <PROPERTY NAME="NumberOfMediaSupported" CLASSORIGIN="CIM_MediaAccessDevice" PROPAGATED="true" TYPE="uint32">
+                <QUALIFIER NAME="read" PROPAGATED="true" TYPE="boolean">
+                    <VALUE>TRUE</VALUE>
+                </QUALIFIER>
+            </PROPERTY>
+            <PROPERTY NAME="Partitions" CLASSORIGIN="Win32_DiskDrive" TYPE="uint32">
+                <QUALIFIER NAME="MappingStrings" TYPE="string">
+                    <VALUE.ARRAY>
+                        <VALUE>Win32API|Device Input and Output Structures|PARTITION_INFORMATION|RecognizedPartition</VALUE>
+                    </VALUE.ARRAY>
+                </QUALIFIER>
+                <QUALIFIER NAME="read" TYPE="boolean">
+                    <VALUE>TRUE</VALUE>
+                </QUALIFIER>
+            </PROPERTY>
+            <PROPERTY NAME="PNPDeviceID" CLASSORIGIN="CIM_LogicalDevice" PROPAGATED="true" TYPE="string">
+                <QUALIFIER NAME="read" PROPAGATED="true" TYPE="boolean">
+                    <VALUE>TRUE</VALUE>
+                </QUALIFIER>
+            </PROPERTY>
+            <PROPERTY.ARRAY NAME="PowerManagementCapabilities" CLASSORIGIN="CIM_LogicalDevice" PROPAGATED="true" TYPE="uint16">
+                <QUALIFIER NAME="read" PROPAGATED="true" TYPE="boolean">
+                    <VALUE>TRUE</VALUE>
+                </QUALIFIER>
+            </PROPERTY.ARRAY>
+            <PROPERTY NAME="PowerManagementSupported" CLASSORIGIN="CIM_LogicalDevice" PROPAGATED="true" TYPE="boolean">
+                <QUALIFIER NAME="read" PROPAGATED="true" TYPE="boolean">
+                    <VALUE>TRUE</VALUE>
+                </QUALIFIER>
+            </PROPERTY>
+            <PROPERTY NAME="SCSIBus" CLASSORIGIN="Win32_DiskDrive" TYPE="uint32">
+                <QUALIFIER NAME="MappingStrings" TYPE="string">
+                    <VALUE.ARRAY>
+                        <VALUE>Win32API|Device Input and Output Structures|SCSI_ADDRESS|PathId</VALUE>
+                    </VALUE.ARRAY>
+                </QUALIFIER>
+                <QUALIFIER NAME="read" TYPE="boolean">
+                    <VALUE>TRUE</VALUE>
+                </QUALIFIER>
+            </PROPERTY>
+            <PROPERTY NAME="SCSILogicalUnit" CLASSORIGIN="Win32_DiskDrive" TYPE="uint16">
+                <QUALIFIER NAME="MappingStrings" TYPE="string">
+                    <VALUE.ARRAY>
+                        <VALUE>Win32API|Device Input and Output Structures|SCSI_ADDRESS|Lun</VALUE>
+                    </VALUE.ARRAY>
+                </QUALIFIER>
+                <QUALIFIER NAME="read" TYPE="boolean">
+                    <VALUE>TRUE</VALUE>
+                </QUALIFIER>
+            </PROPERTY>
+            <PROPERTY NAME="SCSIPort" CLASSORIGIN="Win32_DiskDrive" TYPE="uint16">
+                <QUALIFIER NAME="MappingStrings" TYPE="string">
+                    <VALUE.ARRAY>
+                        <VALUE>Win32API|Device Input and Output Structures|SCSI_ADDRESS|PortNumber</VALUE>
+                    </VALUE.ARRAY>
+                </QUALIFIER>
+                <QUALIFIER NAME="read" TYPE="boolean">
+                    <VALUE>TRUE</VALUE>
+                </QUALIFIER>
+            </PROPERTY>
+            <PROPERTY NAME="SCSITargetId" CLASSORIGIN="Win32_DiskDrive" TYPE="uint16">
+                <QUALIFIER NAME="MappingStrings" TYPE="string">
+                    <VALUE.ARRAY>
+                        <VALUE>Win32API|Device Input and Output Structures|SCSI_ADDRESS|TargetId</VALUE>
+                    </VALUE.ARRAY>
+                </QUALIFIER>
+                <QUALIFIER NAME="read" TYPE="boolean">
+                    <VALUE>TRUE</VALUE>
+                </QUALIFIER>
+            </PROPERTY>
+            <PROPERTY NAME="SectorsPerTrack" CLASSORIGIN="Win32_DiskDrive" TYPE="uint32">
+                <QUALIFIER NAME="MappingStrings" TYPE="string">
+                    <VALUE.ARRAY>
+                        <VALUE>Win32API|Device Input and Output Structures|DISK_GEOMETRY|SectorsPerTrack</VALUE>
+                    </VALUE.ARRAY>
+                </QUALIFIER>
+                <QUALIFIER NAME="read" TYPE="boolean">
+                    <VALUE>TRUE</VALUE>
+                </QUALIFIER>
+            </PROPERTY>
+            <PROPERTY NAME="SerialNumber" CLASSORIGIN="Win32_DiskDrive" TYPE="string">
+                <QUALIFIER NAME="MappingStrings" TYPE="string">
+                    <VALUE.ARRAY>
+                        <VALUE>Win32API|Device Input and Output Structures|STORAGE_DEVICE_DESCRIPTOR|SerialNumberOffset</VALUE>
+                    </VALUE.ARRAY>
+                </QUALIFIER>
+                <QUALIFIER NAME="read" TYPE="boolean">
+                    <VALUE>TRUE</VALUE>
+                </QUALIFIER>
+            </PROPERTY>
+            <PROPERTY NAME="Signature" CLASSORIGIN="Win32_DiskDrive" TYPE="uint32">
+                <QUALIFIER NAME="MappingStrings" TYPE="string">
+                    <VALUE.ARRAY>
+                        <VALUE>Win32API|Device Input and Output Structures|DRIVE_LAYOUT_INFORMATION|Signature</VALUE>
+                    </VALUE.ARRAY>
+                </QUALIFIER>
+                <QUALIFIER NAME="read" TYPE="boolean">
+                    <VALUE>TRUE</VALUE>
+                </QUALIFIER>
+            </PROPERTY>
+            <PROPERTY NAME="Size" CLASSORIGIN="Win32_DiskDrive" TYPE="uint64">
+                <QUALIFIER NAME="MappingStrings" TYPE="string">
+                    <VALUE.ARRAY>
+                        <VALUE>Win32API|Device Input and Output Structures|DISK_GEOMETRY</VALUE>
+                    </VALUE.ARRAY>
+                </QUALIFIER>
+                <QUALIFIER NAME="read" TYPE="boolean">
+                    <VALUE>TRUE</VALUE>
+                </QUALIFIER>
+            </PROPERTY>
+            <PROPERTY NAME="Status" CLASSORIGIN="CIM_ManagedSystemElement" PROPAGATED="true" TYPE="string">
+                <QUALIFIER NAME="MaxLen" PROPAGATED="true" TYPE="sint32">
+                    <VALUE>10</VALUE>
+                </QUALIFIER>
+                <QUALIFIER NAME="read" PROPAGATED="true" TYPE="boolean">
+                    <VALUE>TRUE</VALUE>
+                </QUALIFIER>
+                <QUALIFIER NAME="ValueMap" PROPAGATED="true" TYPE="string">
+                    <VALUE.ARRAY>
+                        <VALUE>OK</VALUE>
+                        <VALUE>Error</VALUE>
+                        <VALUE>Degraded</VALUE>
+                        <VALUE>Unknown</VALUE>
+                        <VALUE>Pred Fail</VALUE>
+                        <VALUE>Starting</VALUE>
+                        <VALUE>Stopping</VALUE>
+                        <VALUE>Service</VALUE>
+                        <VALUE>Stressed</VALUE>
+                        <VALUE>NonRecover</VALUE>
+                        <VALUE>No Contact</VALUE>
+                        <VALUE>Lost Comm</VALUE>
+                    </VALUE.ARRAY>
+                </QUALIFIER>
+            </PROPERTY>
+            <PROPERTY NAME="StatusInfo" CLASSORIGIN="CIM_LogicalDevice" PROPAGATED="true" TYPE="uint16">
+                <QUALIFIER NAME="MappingStrings" PROPAGATED="true" TYPE="string">
+                    <VALUE.ARRAY>
+                        <VALUE>MIF.DMTF|Operational State|003.3</VALUE>
+                    </VALUE.ARRAY>
+                </QUALIFIER>
+                <QUALIFIER NAME="read" PROPAGATED="true" TYPE="boolean">
+                    <VALUE>TRUE</VALUE>
+                </QUALIFIER>
+                <QUALIFIER NAME="ValueMap" PROPAGATED="true" TYPE="string">
+                    <VALUE.ARRAY>
+                        <VALUE>1</VALUE>
+                        <VALUE>2</VALUE>
+                        <VALUE>3</VALUE>
+                        <VALUE>4</VALUE>
+                        <VALUE>5</VALUE>
+                    </VALUE.ARRAY>
+                </QUALIFIER>
+            </PROPERTY>
+            <PROPERTY NAME="SystemCreationClassName" CLASSORIGIN="CIM_LogicalDevice" PROPAGATED="true" TYPE="string">
+                <QUALIFIER NAME="CIM_Key" PROPAGATED="true" TYPE="boolean">
+                    <VALUE>TRUE</VALUE>
+                </QUALIFIER>
+                <QUALIFIER NAME="Propagated" PROPAGATED="true" TYPE="string">
+                    <VALUE>CIM_System.CreationClassName</VALUE>
+                </QUALIFIER>
+                <QUALIFIER NAME="read" PROPAGATED="true" TYPE="boolean">
+                    <VALUE>TRUE</VALUE>
+                </QUALIFIER>
+            </PROPERTY>
+            <PROPERTY NAME="SystemName" CLASSORIGIN="CIM_LogicalDevice" PROPAGATED="true" TYPE="string">
+                <QUALIFIER NAME="CIM_Key" PROPAGATED="true" TYPE="boolean">
+                    <VALUE>TRUE</VALUE>
+                </QUALIFIER>
+                <QUALIFIER NAME="Propagated" PROPAGATED="true" TYPE="string">
+                    <VALUE>CIM_System.Name</VALUE>
+                </QUALIFIER>
+                <QUALIFIER NAME="read" PROPAGATED="true" TYPE="boolean">
+                    <VALUE>TRUE</VALUE>
+                </QUALIFIER>
+            </PROPERTY>
+            <PROPERTY NAME="TotalCylinders" CLASSORIGIN="Win32_DiskDrive" TYPE="uint64">
+                <QUALIFIER NAME="MappingStrings" TYPE="string">
+                    <VALUE.ARRAY>
+                        <VALUE>Win32API|Device Input and Output Structures|DISK_GEOMETRY|Cylinders</VALUE>
+                    </VALUE.ARRAY>
+                </QUALIFIER>
+                <QUALIFIER NAME="read" TYPE="boolean">
+                    <VALUE>TRUE</VALUE>
+                </QUALIFIER>
+            </PROPERTY>
+            <PROPERTY NAME="TotalHeads" CLASSORIGIN="Win32_DiskDrive" TYPE="uint32">
+                <QUALIFIER NAME="MappingStrings" TYPE="string">
+                    <VALUE.ARRAY>
+                        <VALUE>Win32API|Device Input and Output Structures|DISK_GEOMETRY|TracksPerCylinder</VALUE>
+                    </VALUE.ARRAY>
+                </QUALIFIER>
+                <QUALIFIER NAME="read" TYPE="boolean">
+                    <VALUE>TRUE</VALUE>
+                </QUALIFIER>
+            </PROPERTY>
+            <PROPERTY NAME="TotalSectors" CLASSORIGIN="Win32_DiskDrive" TYPE="uint64">
+                <QUALIFIER NAME="MappingStrings" TYPE="string">
+                    <VALUE.ARRAY>
+                        <VALUE>Win32API|Device Input and Output Structures|DISK_GEOMETRY|SectorsPerTrack</VALUE>
+                    </VALUE.ARRAY>
+                </QUALIFIER>
+                <QUALIFIER NAME="read" TYPE="boolean">
+                    <VALUE>TRUE</VALUE>
+                </QUALIFIER>
+            </PROPERTY>
+            <PROPERTY NAME="TotalTracks" CLASSORIGIN="Win32_DiskDrive" TYPE="uint64">
+                <QUALIFIER NAME="MappingStrings" TYPE="string">
+                    <VALUE.ARRAY>
+                        <VALUE>Win32API|Device Input and Output Structures|DISK_GEOMETRY|TracksPerCylinder</VALUE>
+                    </VALUE.ARRAY>
+                </QUALIFIER>
+                <QUALIFIER NAME="read" TYPE="boolean">
+                    <VALUE>TRUE</VALUE>
+                </QUALIFIER>
+            </PROPERTY>
+            <PROPERTY NAME="TracksPerCylinder" CLASSORIGIN="Win32_DiskDrive" TYPE="uint32">
+                <QUALIFIER NAME="MappingStrings" TYPE="string">
+                    <VALUE.ARRAY>
+                        <VALUE>Win32API|Device Input and Output Structures|DISK_GEOMETRY|TracksPerCylinder</VALUE>
+                    </VALUE.ARRAY>
+                </QUALIFIER>
+                <QUALIFIER NAME="read" TYPE="boolean">
+                    <VALUE>TRUE</VALUE>
+                </QUALIFIER>
+            </PROPERTY>
+            <METHOD NAME="SetPowerState" TYPE="uint32" CLASSORIGIN="CIM_LogicalDevice">
+                <PARAMETER NAME="PowerState" TYPE="uint16">
+                    <QUALIFIER NAME="ID" TYPE="sint32" OVERRIDABLE="false" TOSUBCLASS="false" TOINSTANCE="true">
+                        <VALUE>0</VALUE>
+                    </QUALIFIER>
+                    <QUALIFIER NAME="IN" TYPE="boolean" TOSUBCLASS="false">
+                        <VALUE>TRUE</VALUE>
+                    </QUALIFIER>
+                    <QUALIFIER NAME="ValueMap" TYPE="string">
+                        <VALUE.ARRAY>
+                            <VALUE>1</VALUE>
+                            <VALUE>2</VALUE>
+                            <VALUE>3</VALUE>
+                            <VALUE>4</VALUE>
+                            <VALUE>5</VALUE>
+                            <VALUE>6</VALUE>
+                        </VALUE.ARRAY>
+                    </QUALIFIER>
+                </PARAMETER>
+                <PARAMETER NAME="Time" TYPE="datetime">
+                    <QUALIFIER NAME="ID" TYPE="sint32" OVERRIDABLE="false" TOSUBCLASS="false" TOINSTANCE="true">
+                        <VALUE>1</VALUE>
+                    </QUALIFIER>
+                    <QUALIFIER NAME="IN" TYPE="boolean" TOSUBCLASS="false">
+                        <VALUE>TRUE</VALUE>
+                    </QUALIFIER>
+                </PARAMETER>
+            </METHOD>
+            <METHOD NAME="Reset" TYPE="uint32" CLASSORIGIN="CIM_LogicalDevice"></METHOD>
+        </CLASS>
+    </s:Body>
+</s:Envelope>
