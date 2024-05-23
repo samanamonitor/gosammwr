@@ -54,7 +54,7 @@ test_output pull_computersystem_output pull_computersystem.txt valid/valid4.txt
 rm pull_computersystem.txt enum_computersystem.txt
 
 test_run_pipe enum_diskdrive /dev/null bin/test_protocol_enum resourceuri http://schemas.microsoft.com/wbem/wsman/1/wmi/root/cimv2/win32_DiskDrive \
-	index 1
+	f:index=1 h:__cimnamespace=root/cimv2
 test_run_pipe pull_diskdrive enum_diskdrive.txt bin/test_protocol_pull -
 test_output pull_diskdrive_output pull_diskdrive.txt valid/valid5.txt
 rm enum_diskdrive.txt pull_diskdrive.txt
