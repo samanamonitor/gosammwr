@@ -10,7 +10,7 @@ import (
 )
 
 type Shell struct {
-	prot protocol.Protocol
+	prot *protocol.Protocol
 	ShellId string
 	CommandIds []string 
 }
@@ -29,16 +29,12 @@ type ShellInstance struct {
 	ShellInactivity string
 }
 
-var boolToString = map[bool]string{
-		true: "TRUE",
-		false: "FALSE",
-}
-
 func (s *Shell) Init(endpoint string,
 		username string,
 		password string,
 		keytab_file string) (error) {
-	err := s.prot.Init(endpoint, username, password, keytab_file)
+	var err error
+    s.prot, err = protocol.NewProtocol(endpoint, username, password, keytab_file)
 
 	return err
 }
@@ -49,7 +45,7 @@ func (s *Shell) Cleanup() {
 
 func (s *Shell) List() ([]ShellInstance, error){
 	resourceURI := "http://schemas.microsoft.com/wbem/wsman/1/windows/shell"
-	EnumerationContext, err := s.prot.Enumerate(resourceURI, nil, nil, nil)
+	EnumerationContext, _, err := s.prot.Enumerate(resourceURI, nil, nil, protocol.EnumerationOptions{})
 	if err != nil {
 		return []ShellInstance{}, err
 	}
@@ -75,10 +71,10 @@ func (s *Shell) List() ([]ShellInstance, error){
 
 func (s *Shell) Get(ShellId string) (ShellInstance, error) {
 	resourceURI := "http://schemas.microsoft.com/wbem/wsman/1/windows/shell"
-	selectorset := map[string]string {
+	selectorset := protocol.SelectorSet {
 		"ShellId": ShellId,
 	}
-	si_xml, err := s.prot.Get(resourceURI, &selectorset, nil)
+	si_xml, err := s.prot.Get(resourceURI, selectorset, nil)
 	if err != nil {
 		return ShellInstance{}, err
 	}
@@ -126,16 +122,11 @@ func (s *Shell) Create(InputStreams []string, OutputStreams []string, Name strin
 		}
 	}
 
-	optionset := map[string]protocol.Option{}
-	optionset["WINRS_NOPROFILE"] = protocol.Option{
-		Value: "FALSE",
-		Type: "xs:boolean",
-	}
-	optionset["WINRS_CODEPAGE"] = protocol.Option{
-		Value: "437",
-		Type: "xs:unsignedInt",
-	}
-	body_str, err := s.prot.Create(resourceURI, shell, &optionset)
+	optionset := protocol.OptionSet{}
+	optionset.Add("WINRS_NOPROFILE", "xs:boolean", "FALSE")
+	optionset.Add("WINRS_CODEPAGE", "xs:boolean", "437")
+
+	body_str, err := s.prot.Create(resourceURI, shell, optionset)
 	if err != nil {
 		return ShellInstance{}, err
 	}
@@ -149,31 +140,22 @@ func (s *Shell) Create(InputStreams []string, OutputStreams []string, Name strin
 
 func (s *Shell) Delete(ShellId string) (error) {
 	resourceURI := "http://schemas.microsoft.com/wbem/wsman/1/windows/shell/cmd"
-    selectorset := map[string]string {
+    selectorset := protocol.SelectorSet {
         "ShellId": ShellId,
     }
-    _, err := s.prot.Delete(resourceURI, &selectorset, nil)
+    _, err := s.prot.Delete(resourceURI, selectorset, nil)
     return err
 }
 
 func (s *Shell) Command(ShellId string, command []string, SkipCmdShell bool, ConsoleModeStdin bool, 
-		optionset *map[string]protocol.Option) (string, error) {
+		optionset protocol.OptionSet) (string, error) {
 	resourceURI := "http://schemas.microsoft.com/wbem/wsman/1/windows/shell/cmd"
 
-	selectorset := map[string]string{
+	selectorset := protocol.SelectorSet {
 		"ShellId": ShellId,
 	}
-	if optionset == nil {
-		optionset = &(map[string]protocol.Option{})
-	}
-	(*optionset)["WINRS_CONSOLEMODE_STDIN"] = protocol.Option{
-		Value: boolToString[ConsoleModeStdin],
-		Type: "xs:boolean",
-	}
-	(*optionset)["WINRS_SKIP_CMD_SHELL"] = protocol.Option{
-		Value: boolToString[SkipCmdShell],
-		Type: "xs:boolean",
-	}
+	optionset.Add("WINRS_CONSOLEMODE_STDIN", "xs.boolean", strconv.FormatBool(ConsoleModeStdin))
+	optionset.Add("WINRS_SKIP_CMD_SHELL", "xs.boolean", strconv.FormatBool(SkipCmdShell))
 
 	if len(command) < 1 {
 		return "", errors.New("command array must have at least 1 element")
@@ -184,7 +166,7 @@ func (s *Shell) Command(ShellId string, command []string, SkipCmdShell bool, Con
 		CommandLine.CreateElement("rsp:Arguments").CreateText(command[i])
 	}
 
-	body_str, err := s.prot.Command(resourceURI, CommandLine, &selectorset, optionset)
+	body_str, err := s.prot.Command(resourceURI, CommandLine, selectorset, optionset)
 	if err != nil {
 		return "", err
 	}
@@ -213,7 +195,7 @@ type StreamType struct {
 func (s *Shell) Receive(ShellId string, CommandId string, Streams []string) (CommandState, []StreamType, error) {
 	resourceURI := "http://schemas.microsoft.com/wbem/wsman/1/windows/shell/cmd"
 
-	selectorset := map[string]string{
+	selectorset := protocol.SelectorSet {
 		"ShellId": ShellId,
 	}
 
@@ -226,7 +208,7 @@ func (s *Shell) Receive(ShellId string, CommandId string, Streams []string) (Com
     DesiredStream.CreateText(strings.Join(Streams, " "))
 
 
-    body_str, err := s.prot.Receive(resourceURI, Receive, &selectorset, nil)
+    body_str, err := s.prot.Receive(resourceURI, Receive, selectorset, nil)
     if err != nil {
 		return cs, response, err
     }
@@ -282,7 +264,7 @@ func (s *Shell) Receive(ShellId string, CommandId string, Streams []string) (Com
 func (s *Shell) Send(ShellId string, CommandId string, Data string, Stream string, End bool) (string, error) {
     resourceURI := "http://schemas.microsoft.com/wbem/wsman/1/windows/shell/cmd"
 
-    selectorset := map[string]string {
+    selectorset := protocol.SelectorSet {
         "ShellId": ShellId,
     }
 
@@ -290,10 +272,10 @@ func (s *Shell) Send(ShellId string, CommandId string, Data string, Stream strin
     stream_element := send_element.CreateElement("rsp:Stream")
     stream_element.CreateAttr("Name", Stream)
     stream_element.CreateAttr("CommandId", CommandId)
-    stream_element.CreateAttr("End", boolToString[End])
+    stream_element.CreateAttr("End", strconv.FormatBool(End))
     stream_element.CreateText(b64.StdEncoding.EncodeToString([]byte(Data)))
 
-    response, err := s.prot.Send(resourceURI, send_element, &selectorset, nil)
+    response, err := s.prot.Send(resourceURI, send_element, selectorset, nil)
     if err != nil {
     	return "", err
     }
