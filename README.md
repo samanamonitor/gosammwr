@@ -22,6 +22,11 @@ winrm set winrm/config/service "@{AllowUnencrypted="true"}"
 $computer=computer
 $pssessionoption=New-PSSessionOption -NoEncryption
 Enter-PSSession -ComputerName $computer -SessionOption $pssessionoption
+
+$computer=computer
+$cimsessionoption=New-CimSessionOption -NoEncryption
+$cimsession=New-CimSession -computer $computer -SessionOption $cimsessionoption
+Get-CimInstance -CimSession $cimsession -ClassName Win32_DiskDrive
 ```
 ## Enable encrypted messages on Windows
 ```
