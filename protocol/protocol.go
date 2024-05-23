@@ -279,16 +279,13 @@ func (p *Protocol) Pull(resourceURI string,
 	} else {
 		ec = ""
 	}
-	PullResponse := response.FindElement("//Items")
-	if PullResponse == nil {
+	Items := response.FindElement("//Items")
+	if Items == nil {
 		ret, _ := response.WriteToString()
 		return "", "", errors.New("Invalid Response. Items tag missing.\n" + ret)
 	}
-	if len(PullResponse.Text()) == 0 {
-		return "", "", nil
-	}
 	newdoc := etree.NewDocument()
-	newdoc.SetRoot(PullResponse)
+	newdoc.SetRoot(Items)
 	ret, _ := newdoc.WriteToString()
 	return ec, ret, nil
 }
