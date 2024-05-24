@@ -23,5 +23,5 @@ func main() {
     if err != nil {
     	panic(err)
     }
-    fmt.Println(c.ClassXML)
+    fmt.Println(c)
 }
